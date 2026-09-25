@@ -2,7 +2,9 @@
 
 ## Eleven generations in one afternoon. Not one invented ancestor.
 
-The afternoon is measured: a branch went from nothing to a founder born in 1632, between 3 p.m. and 7 p.m. on a Saturday. The second half of that sentence is the hard one, and it is what most of this code is for.
+**Give it a name and a village. It opens the archive portals, finds the registers, reads the handwriting, and writes what the act actually says into your family history — every fact with its source, and a page your relatives can read without deciphering a tree.**
+
+The afternoon is measured: a branch went from nothing to a founder born in 1632, between 3 p.m. and 7 p.m. on a Saturday. The second half of the headline is the hard part, and it is what most of this code is for.
 
 ```bash
 claude plugin marketplace add pascalpediroda-maker/genealog-ia-plugin

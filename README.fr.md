@@ -2,7 +2,9 @@
 
 ## Onze générations en une après-midi. Pas un ancêtre inventé.
 
-L'après-midi est mesurée : une branche est passée de rien à une souche née en 1632, entre 15 h et 19 h un samedi. C'est la seconde moitié de la phrase qui est difficile, et c'est à elle que sert l'essentiel du code.
+**Donnez-lui un nom et un village. Il ouvre les portails d'archives, retrouve les registres, déchiffre l'écriture, et écrit ce que l'acte dit vraiment dans votre histoire de famille — chaque fait avec sa source, et une page que vos proches lisent sans avoir à déchiffrer un arbre.**
+
+L'après-midi est mesurée : une branche est passée de rien à une souche née en 1632, entre 15 h et 19 h un samedi. C'est la seconde moitié du titre qui est difficile, et c'est à elle que sert l'essentiel du code.
 
 ```bash
 claude plugin marketplace add pascalpediroda-maker/genealog-ia-plugin
