@@ -1,64 +1,38 @@
 # genealog-ia
 
-## Onze générations en une après-midi. Pas un ancêtre inventé.
+Un plugin Claude Code pour la recherche généalogique : il trouve les actes, déchiffre l'écriture, et écrit ce qu'ils disent dans une histoire de famille documentée.
 
-**Donnez-lui un nom et un village. Il ouvre les portails d'archives, retrouve les registres, déchiffre l'écriture, et écrit ce que l'acte dit vraiment dans votre histoire de famille — chaque fait avec sa source, et une page que vos proches lisent sans avoir à déchiffrer un arbre.**
+Claude lit déjà un document et en fait un résumé correct. Deux choses qu'il ne fait pas bien seul : **chercher dans les archives** — une centaine de portails départementaux, chacun se défendant à sa façon — et **s'arrêter à ce qu'il a réellement lu**. Laissé à lui-même, il comble un blanc avec le nom vraisemblable, et un ancêtre fabriqué se propage dans tous les arbres qui recopient le vôtre.
 
-L'après-midi est mesurée : une branche est passée de rien à une souche née en 1632, entre 15 h et 19 h un samedi. C'est la seconde moitié du titre qui est difficile, et c'est à elle que sert l'essentiel du code.
-
-```bash
-claude plugin marketplace add pascalpediroda-maker/genealog-ia-plugin
-claude plugin install genealog-ia@genealog-ia
-```
+Ce plugin ajoute la moitié qui manque : l'outillage de recherche sur **plus de 130 fonds en ligne**, la méthode de lecture, et les règles de fiabilité — chacune écrite après qu'elle a coûté quelque chose sur un arbre réel.
 
 ---
 
-## Vous savez déjà ce qui cloche
+## Les skills
 
-Vous demandez à une IA de lire un registre paroissial. Elle impressionne dix minutes.
-
-Puis elle comble un blanc avec le nom qui *va bien*. Elle vous annonce qu'un registre ne contient rien, après un balayage qui ne montre qu'un acte sur trois. Elle conclut d'une demi-lecture — et six mois plus tard vous contournez encore un mur qui n'existait pas.
-
-Un ancêtre fabriqué ne reste pas chez vous. Il se propage dans tous les arbres qui recopient le vôtre.
-
-**Les trois sont arrivés sur l'arbre qui a servi à bâtir ce plugin.** C'est pour ça qu'il existe.
+| Skill | Ce qu'elle fait | Exemples de demandes |
+| --- | --- | --- |
+| **archives-fr** | Ouvrir un portail d'archives, retrouver un registre, en tirer les vues, lire un acte au bon grossissement, et consigner ce qu'on a trouvé — comme ce qu'on n'a pas trouvé. | « trouve le mariage de 1858 de mon arrière-grand-père, il était de Haute-Loire », « liste les registres de cette commune », « lis les vues 120 à 128 », « est-elle morte là après 1870 ? » |
+| **trame-fr** | Verser un témoignage ou un acte dans le corpus : personnes, unions, moments, sources. Rédiger le narratif, décider ce qui reste privé, relire une fiche avant publication. | « ajoute cet acte au corpus », « écris sa vie à partir de ces trois sources », « est-ce que ça doit rester privé ? », « relis sa fiche avant que je publie » |
+| **nouveau-corpus** | Ouvrir l'arbre de quelqu'un d'autre — un ami, un adhérent du club — à partir d'une photo, d'un PDF, d'un GEDCOM ou d'un souvenir raconté. | « ouvre un corpus pour cette famille », « voici un arbre manuscrit scanné », « qu'est-ce que je dois leur demander ensuite ? » |
 
 ---
 
-## Ce qu'il fait à la place
+## Éprouvé à l'usage
 
-**Il écrit `[non lu]`** là où il n'a pas su lire le mot, au lieu du nom vraisemblable.
-
-**Il dit comment il a cherché.** « Balayé aux marges » et « lu en pleine page » ne sont pas la même affirmation, et le compte rendu précise laquelle — parce qu'un balayage de marges ne montre jamais un mariage, et que personne ne l'avait écrit avant que ça coûte un mariage.
-
-**Il ne crée personne sur une ressemblance.** Nommé par un acte ou par un témoin → créé. Déduit d'un homonyme ou d'un âge plausible → la question vous revient.
-
-**Et il refuse de publier** quand un contrôle échoue : une date qui contredit la fiche, un moment sans date qui tomberait après le décès, deux passages qui racontent deux fois la même chose.
-
----
-
-## Ce que vous y gagnez
-
-**Les murs tombent par le côté.** Une aïeule que personne ne trouvait depuis des années : les fichiers de décès n'indexent que les noms de naissance, les recensements inscrivent les épouses sous le nom du mari. Elle était invisible des deux côtés. C'est la ligne de sa belle-mère, deux rangs plus bas dans le même ménage, qui l'a rendue.
-
-**Les photographies se datent seules.** Un tampon de photographe lu au grossissement a placé un portrait de famille en Allemagne occupée. Un bout d'affiche de cinéma derrière deux enfants a resserré un cliché sur un automne, par la circulation du film en salle.
-
-**Une page que la famille ouvre vraiment.** Pas un schéma d'arbre — une vie racontée moment par moment, avec l'image de l'acte sous le texte, et chaque fait portant d'où il vient et à quel point on en est sûr.
-
-**Les démarches, rédigées.** Les demandes d'actes écrites, la bonne mairie nommée, et qui a le droit de demander quoi — ce qui, en France, sépare cinq minutes de jamais.
-
----
-
-## Jusqu'où ça va
+Trois corpus familiaux tournent dessus tous les jours. Le premier a été bâti en **six semaines, sans aucune connaissance préalable en généalogie** : 754 personnes, 482 moments de vie, 350 sources, 258 photographies.
 
 | | |
 |---|---|
-| **France** | près de la moitié des départements, sur la douzaine de plateformes qui font tourner leurs portails. En ouvrir un de plus est le plus souvent de la configuration, pas du code |
-| **Ailleurs** | l'état civil italien, celui d'Algérie, et un catalogue qui va de la Pologne à l'Argentine |
-| **Hors registres** | fiches matricules, presse numérisée, fichier des décès, bases de cimetières et de déportation |
-| **Les images** | demi-page rendue à la taille lisible, recadrage sur l'encre, zoom sur un mot pâle, planches qui datent un registre sans le lire |
+| **11 générations** | en moins de 4 heures, de rien jusqu'à une souche née en 1632 |
+| **≈ 400 vues / heure** | en balayage de registres anciens, même sans table décennale |
+| **31 356 377 lignes** | 6,27 Go parcourus en 6 minutes pour retrouver une aïeule dont on n'avait que la date de naissance |
+| **3 GEDCOM réparés** | sortis d'un programme de Windows XP qui écrivait dans le champ *lieu* toute date qu'il ne savait pas lire — 5 234 personnes, 1 268 dates et 219 liens de famille remis, sans toucher un fichier d'origine |
+| **22 demandes d'actes** | rédigées, adressées, et suivies |
 
-Il répare aussi ce que d'autres logiciels ont cassé : trois arbres sortis d'un programme de Windows XP, où chaque date qu'il ne savait pas lire avait été écrite dans le champ *lieu*. Des milliers de personnes remises d'aplomb, sans qu'un seul fichier d'origine soit touché.
+Et trois photographies sans légende : un bout d'affiche de cinéma qui en date une à l'automne 1958, par la circulation du film en salle. Un numéro de prisonnier et un nom de camp au dos d'une autre — Stalag II B, en Poméranie. Un tampon de photographe sur la troisième — *E. Bernauer, Troisdorf* — qui l'a placée en Allemagne occupée et a ouvert une recherche de registre matricule.
+
+**Aucun de ces trois faits n'était connu de la famille.**
 
 ---
 
@@ -71,23 +45,36 @@ claude plugin install genealog-ia@genealog-ia
 
 Trois questions à l'activation — où ranger les archives, où sont déjà vos photographies, où écrire le corpus. Vous ne retapez plus jamais un chemin.
 
-| | |
+| Ce qu'il faut | |
 |---|---|
 | **Claude Code** | et un modèle capable de lire l'image d'un registre manuscrit |
 | **Python 3.10+** | installé pour vous par [`uv`](https://docs.astral.sh/uv/) si vous ne l'avez pas |
-| **Node** | pour une douzaine de départements dont les portails bloquent les clients qui ne sont pas un navigateur. On vous le dira le jour où ça arrive |
+| **Node** | pour une douzaine de départements dont les portails bloquent les clients qui ne sont pas un navigateur. On vous le dit le jour où ça arrive |
 
 ---
 
-## D'où viennent les règles
+## Jusqu'où ça va
 
-Une « Clotilde » a vécu plusieurs jours dans le corpus d'origine — fiche, parents, événements — avant qu'on s'aperçoive qu'elle était née d'un prénom inventé par une transcription automatique.
+| | |
+|---|---|
+| **France** | près de la moitié des départements, sur la douzaine de plateformes qui font tourner leurs portails. En ouvrir un de plus est le plus souvent de la configuration, pas du code |
+| **Ailleurs** | l'état civil italien, celui d'Algérie, et un catalogue qui va de la Pologne à l'Argentine |
+| **Hors registres** | fiches matricules, presse numérisée, fichier des décès, bases de cimetières et de déportation |
+| **Les images** | demi-page rendue à la taille lisible, recadrage sur l'encre, zoom sur un mot pâle, planches qui datent un registre sans le lire |
 
-Une paroisse a été déclarée vide sur douze années de registres. Le mariage y était, troisième acte de la page.
+---
 
-Un balayage des marges a manqué une naissance parce qu'un timbre fiscal de 75 centimes couvrait la moitié de la mention.
+## Les règles de fiabilité
 
-Chacune est devenue une règle, et plusieurs sont des scripts qui échouent au lieu d'avertir. Une règle nue se relit et s'oublie ; une règle attachée à son accident se retient.
+Ce ne sont pas des conseils dans un document. Plusieurs sont des scripts qui échouent au lieu d'avertir.
+
+- **`[non lu]` à la place du nom vraisemblable**, partout où un mot n'a pas été lu au grossissement.
+- **Un négatif dit par quelle méthode il a été obtenu.** « Balayé aux marges » et « lu en pleine page » ne sont pas la même affirmation — un balayage de marges ne montre jamais un mariage.
+- **Personne n'est créé sur une ressemblance.** Nommé par un acte ou par un témoin → créé. Déduit d'un homonyme ou d'un âge plausible → la question vous revient.
+- **Chaque valeur porte sa source et sa confiance**, et la lecture écartée est conservée à côté de celle qu'on retient, avec la raison.
+- **La publication est refusée** quand un contrôle échoue : une date qui contredit la fiche, un moment sans date qui tomberait après le décès, deux passages qui racontent deux fois la même chose.
+
+Chacune vient d'un accident. Une « Clotilde » a vécu plusieurs jours dans le corpus d'origine — fiche, parents, événements — avant qu'on s'aperçoive qu'elle était née d'un prénom inventé par une transcription automatique.
 
 ---
 
