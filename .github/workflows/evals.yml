@@ -31,9 +31,11 @@ jobs:
       - name: Installer Claude Code
         run: npm install -g @anthropic-ai/claude-code
 
+      # Le jeton vient de `claude setup-token`, donc de l'ABONNEMENT. Une clé API serait
+      # une facturation séparée sur le compte Console, avec ses propres crédits.
       - name: Lancer la suite
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
         run: |
           if [ -n "${{ inputs.case }}" ]; then
             claude plugin eval . --case "${{ inputs.case }}" --no-publish
