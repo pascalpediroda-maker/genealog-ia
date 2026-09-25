@@ -1,0 +1,1372 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eval report — genealog-ia v0.1.0</title>
+</head>
+<body>
+<style>
+:root{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--ink-3:#6b6a64;--hairline:rgba(11,11,11,.10);--grid:#e1e0d9;--inset:rgba(11,11,11,.04);--accent:#2a78d6;--base-fill:#6b6a64;--delta-good:#006300;--good:#067d06;--warning:#8a6100;--critical:#d03b3b;
+  color-scheme:light dark;
+}
+@media (prefers-color-scheme:dark){:root{--plane:#0d0d0d;--surface:#1a1a19;--ink:#ffffff;--ink-2:#c3c2b7;--ink-3:#898781;--hairline:rgba(255,255,255,.10);--grid:#2c2c2a;--inset:rgba(255,255,255,.05);--accent:#3987e5;--base-fill:#898781;--delta-good:#0ca30c;--good:#0ca30c;--warning:#fab219;--critical:#e06c6c;color-scheme:dark}}
+:root[data-theme="dark"]{--plane:#0d0d0d;--surface:#1a1a19;--ink:#ffffff;--ink-2:#c3c2b7;--ink-3:#898781;--hairline:rgba(255,255,255,.10);--grid:#2c2c2a;--inset:rgba(255,255,255,.05);--accent:#3987e5;--base-fill:#898781;--delta-good:#0ca30c;--good:#0ca30c;--warning:#fab219;--critical:#e06c6c;color-scheme:dark}
+:root[data-theme="light"]{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--ink-3:#6b6a64;--hairline:rgba(11,11,11,.10);--grid:#e1e0d9;--inset:rgba(11,11,11,.04);--accent:#2a78d6;--base-fill:#6b6a64;--delta-good:#006300;--good:#067d06;--warning:#8a6100;--critical:#d03b3b;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plane);color:var(--ink);
+  font:14px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;
+  -webkit-text-size-adjust:100%}
+.wrap{max-width:880px;margin:0 auto;padding:40px 24px 64px;display:flex;flex-direction:column;gap:20px}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+header h1{margin:2px 0 0;font-size:24px;font-weight:600;line-height:1.25;text-wrap:balance}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;color:var(--ink-2);font-size:13px}
+.meta .num{font-variant-numeric:tabular-nums lining-nums}
+.banner{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;
+  border:1px solid var(--hairline);background:var(--surface);font-size:13px}
+.banner .chip-warn{color:var(--warning);font-weight:600}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.tile{background:var(--surface);border:1px solid var(--hairline);border-radius:10px;padding:14px 16px;
+  display:flex;flex-direction:column;gap:4px}
+.tile .label{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.tile .value{font-size:26px;font-weight:600;font-variant-numeric:tabular-nums lining-nums;line-height:1.1}
+.tile.hero .value{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:48px}
+.tile .sub{font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.tile .value.delta-pos{color:var(--delta-good)}
+.tile .value.delta-neg{color:var(--critical)}
+.toolbar{display:flex;gap:8px;justify-content:flex-end}
+.toolbar button{font:12px system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink-2);
+  background:var(--surface);border:1px solid var(--hairline);border-radius:6px;padding:4px 10px;cursor:pointer}
+.toolbar button:hover{color:var(--ink)}
+.toolbar button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.case{background:var(--surface);border:1px solid var(--hairline);border-radius:10px;padding:18px 20px;
+  display:flex;flex-direction:column;gap:10px}
+.case-regressed{border-left:3px solid var(--critical)}
+.verdict{margin:6px 0 0;font-size:15px}
+.verdict .delta{font-size:15px}
+.flag{font-size:11px;font-weight:600;color:var(--warning);white-space:nowrap}
+.star{color:var(--warning);font-size:.45em;vertical-align:super;line-height:0;cursor:help}
+.legend summary{cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2)}
+.legend-list{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--ink-2)}
+.case-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.case-head h2{margin:0;font-size:16px;font-weight:600}
+.case-head .spacer{flex:1}
+.case-score{font-size:15px;font-weight:600}
+.mono{font:12px "SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.num{font-variant-numeric:tabular-nums lining-nums}
+.muted{color:var(--ink-3);font-size:12px}
+.meter{display:inline-block;position:relative;width:120px;height:6px;border-radius:4px;background:var(--grid);
+  vertical-align:middle}
+.meter>span{display:block;height:100%;border-radius:4px;max-width:100%}
+.meter .tick{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--ink-3);border-radius:1px}
+.m-accent>span{background:var(--accent)}
+.m-base>span{background:var(--base-fill)}
+.delta{font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
+.delta-pos{color:var(--delta-good)}
+.delta-neg{color:var(--critical)}
+.delta-zero{color:var(--ink-3)}
+details.section{border-top:1px solid var(--grid);padding-top:10px}
+details.section>summary{cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--ink-2);list-style-position:outside;margin-left:2px}
+details.section>summary:hover{color:var(--ink)}
+details.section[open]>summary{margin-bottom:8px}
+.md{display:flex;flex-direction:column;gap:8px;background:var(--inset);border-radius:8px;
+  padding:12px 14px;overflow-wrap:break-word}
+.md>:first-child{margin-top:0}
+.md h1,.md h2,.md h3,.md h4,.md h5,.md h6{margin:4px 0 0;font-size:1em;font-weight:600;line-height:1.3}
+.md p,.md ul,.md ol,.md blockquote,.md table,.md pre,.md hr{margin:0}
+.md ul,.md ol{display:flex;flex-direction:column;gap:4px;padding-left:20px}
+.md blockquote{border-left:2px solid var(--hairline);padding-left:10px;color:var(--ink-2)}
+.md :not(pre)>code{background:var(--inset);padding:1px 4px;border-radius:4px;
+  font:.92em "SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.md pre{background:var(--inset);border:1px solid var(--hairline);padding:10px 12px;border-radius:6px;
+  overflow-x:auto;font:12px/1.5 "SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.md pre code{background:none;padding:0;font:inherit}
+.md table{width:100%;border-collapse:collapse}
+.md th,.md td{padding:5px 8px;text-align:left;vertical-align:top;border-bottom:1px solid var(--grid)}
+.md th{font-weight:600;color:var(--ink-2)}
+.md a{color:var(--accent);text-decoration:none}
+.md a:hover{text-decoration:underline}
+.grader-def{display:flex;flex-direction:column;gap:6px;padding:8px 0}
+.grader-def+.grader-def{border-top:1px solid var(--grid)}
+.grader-def-head{display:flex;align-items:baseline;gap:8px}
+.grader-name{font:13px "SF Mono",ui-monospace,Menlo,Consolas,monospace;font-weight:600}
+.badge{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);
+  border:1px solid var(--hairline);border-radius:999px;padding:1px 8px}
+.config{display:flex;flex-direction:column;gap:2px;background:var(--inset);border-radius:8px;padding:10px 14px}
+.config code{font:12px "SF Mono",ui-monospace,Menlo,Consolas,monospace;overflow-wrap:anywhere}
+.arm{display:flex;flex-direction:column;gap:8px;padding:6px 0}
+.arm+.arm{border-top:1px dashed var(--grid);margin-top:4px;padding-top:12px}
+.arm-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.arm-label{font-size:13px;font-weight:600}
+.run{border:1px solid var(--grid);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.run-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.run-title{font-size:12px;font-weight:600;color:var(--ink-2)}
+.run-error .explanation{color:var(--ink-2)}
+.note{font-size:12px;color:var(--ink-2)}
+.graders{display:flex;flex-direction:column;gap:4px}
+details.grader{border-radius:6px}
+details.grader>summary{cursor:pointer;display:flex;align-items:baseline;gap:8px;padding:3px 4px;
+  border-radius:6px;list-style:none}
+details.grader>summary::-webkit-details-marker{display:none}
+details.grader>summary::before{content:'▸';font-size:10px;color:var(--ink-3);flex:none;
+  transition:transform .12s ease}
+details.grader[open]>summary::before{transform:rotate(90deg)}
+details.grader>summary:hover{background:var(--inset)}
+details.grader>summary:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.grader-body{padding:6px 8px 8px 24px;display:flex;flex-direction:column;gap:6px}
+.chip{font-size:11px;font-weight:600;border-radius:999px;padding:1px 8px;white-space:nowrap}
+.chip-pass{color:var(--good);border:1px solid currentColor}
+.chip-fail{color:var(--critical);border:1px solid currentColor}
+.chip.chip-warn{color:var(--warning);border:1px solid currentColor}
+.explanation{margin:0;font-size:13px;color:var(--ink-2);white-space:pre-wrap;overflow-wrap:break-word}
+.kv{display:flex;gap:8px;font-size:12px;color:var(--ink-3)}
+.votes{font-variant-numeric:tabular-nums;letter-spacing:.1em}
+pre.evidence{margin:0;background:var(--inset);border:1px solid var(--hairline);border-radius:6px;
+  padding:8px 10px;overflow-x:auto;max-height:320px;
+  font:12px/1.5 "SF Mono",ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap;overflow-wrap:break-word}
+footer{color:var(--ink-3);font-size:12px;text-align:center;padding-top:8px}
+@media (prefers-reduced-motion:no-preference){
+  details.grader>summary,.toolbar button{transition:background .12s ease,color .12s ease}
+}
+@media (prefers-reduced-motion:reduce){
+  details.grader>summary::before{transition:none}
+}
+@media print{
+  :root,:root[data-theme="dark"],:root[data-theme="light"]{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--ink-3:#6b6a64;--hairline:rgba(11,11,11,.10);--grid:#e1e0d9;--inset:rgba(11,11,11,.04);--accent:#2a78d6;--base-fill:#6b6a64;--delta-good:#006300;--good:#067d06;--warning:#8a6100;--critical:#d03b3b;color-scheme:light}
+  body{background:#fff}
+  .toolbar{display:none}
+  .case,.run,.grader-def{break-inside:avoid}
+  pre.evidence{max-height:none}
+}
+</style>
+<div class="wrap">
+<header>
+<div class="eyebrow">Plugin eval report</div>
+<h1>genealog-ia v0.1.0</h1>
+<p class="verdict">Plugin effect: <span class="delta delta-pos">↑ +8.3 pts</span> vs baseline — improved 1 · flat 3 · regressed 0 of 4 cases.</p>
+<div class="meta">
+<span class="mono">.</span>
+<span>Claude Code v2.1.282</span>
+<span class="num">2026-09-25 16:43 UTC</span>
+<span class="num">4m</span>
+<span class="num">$3.61</span>
+<span class="num">24 runs</span>
+<span class="num">3 in flight</span>
+
+
+<span>judge default</span>
+<span class="num">threshold 100%</span>
+
+</div>
+</header>
+
+<section class="tiles">
+<div class="tile hero"><span class="label">Suite score · with plugin</span><span class="value">100%</span><span class="sub">mean of per-case scores</span></div>
+<div class="tile"><span class="label">Ablation Δ</span><span class="value num delta-pos">↑ +8.3</span><span class="sub">score points vs baseline, 4 of 4 cases</span></div>
+<div class="tile"><span class="label">Baseline score</span><span class="value num">91.7%</span><span class="sub">without the plugin</span></div>
+<div class="tile"><span class="label">Cases</span><span class="value num">4</span><span class="sub">4 of 4 ≥ 100% threshold</span></div>
+<div class="tile"><span class="label">Perfect runs</span><span class="value num">100%</span><span class="sub">runs where every grader passed</span></div>
+</section>
+<details class="section legend">
+<summary>How to read this report</summary>
+<ul class="legend-list">
+<li>A run's score is the weighted fraction of its graders that passed; a "perfect" run passed every grader.</li>
+<li>A case's score is the mean of its runs; a case passes when its score is at or above the 100% threshold (the tick on each case bar).</li>
+<li>The suite score is the mean of the per-case scores.</li>
+<li>Judge votes are independent samples of the LLM judge; the majority decides pass or fail.</li>
+<li>"With plugin" and "Baseline" runs are identical except for the plugin being loaded; Δ is the with-plugin score minus the baseline score.</li>
+
+</ul>
+</details>
+<div class="toolbar"><button type="button" data-act="expand">Expand all</button><button type="button" data-act="collapse">Collapse all</button></div>
+<article class="case" id="case-1">
+<div class="case-head">
+<h2>declenchement-ouvrir-son-arbre</h2>
+<span class="muted mono">evals\declenchement-ouvrir-son-arbre</span>
+<span class="spacer"></span>
+
+<span class="delta delta-zero">· 0.0 pts</span>
+<span class="muted">with plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span><i class="tick" style="left:100.0%"></i></span>
+<span class="num case-score">100%</span>
+</div>
+
+<details class="section" open>
+<summary>Results</summary>
+<section class="arm">
+<div class="arm-head">
+<span class="arm-label">With plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.15 · 16:43:43 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">demarrage</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Avec plaisir. On commence par ce que vous avez déjà, avant d&apos;écrire la moindre fiche.
+
+## 1. La photo de l&apos;arbre de votre grand-mère
+
+Envoyez-moi **le fichier d&apos;origine**, en pleine résolution : l&apos;original du téléphone ou le scan, pas une capture d&apos;écran ni une photo recompressée par une messagerie. Une écriture à la main se déchiffre de près, en comparant ses lettres entre elles. Par exemple, on reconnaît un « 9 » douteux en le comparant aux autres 9 de la page.
+
+Je lirai la photo par zones, en l&apos;agrandissant. Ce que je ne peux pas lire avec certitude sera noté **[non lu]** ou marqué comme douteux. Je ne complète jamais un blanc par ce qui semble plausible. Je vous poserai ces questions directement.
+
+## 2. Ce que votre grand-mère vous a raconté
+
+Écrivez-le comme ça vient, sans mettre en forme : des noms, des prénoms, des villages, des métiers, « il est mort à la guerre », « ils se sont mariés à… ». Chaque souvenir sera enregistré comme **un témoignage** : une vraie source, mais qu&apos;il faudra confirmer par un acte d&apos;état civil.
+
+## 3. Ensuite, de mon côté
+
+- **Vérifier dans le fichier des décès de l&apos;INSEE.** Pour toute personne morte en France depuis 1970, il donne gratuitement la date et le lieu de naissance exacts, et l&apos;orthographe officielle du nom. C&apos;est la vérification la plus rentable, et je la fais avant d&apos;écrire quoi que ce soit.
+- **Créer les fiches** : personnes, unions, événements et lieux, avec un niveau de confiance prudent. Aucun lien de parenté ne sera ajouté s&apos;il n&apos;a pas été dit ou écrit.
+- **Vous donner trois listes** : les actes à demander, et à quelle mairie ; les questions à poser à la famille ; les archives à consulter.
+
+## Trois questions pour bien démarrer
+
+1. **Votre grand-mère est-elle encore là pour qu&apos;on lui pose des questions ?** Si c&apos;est le cas, c&apos;est de loin la meilleure source. Mieux vaut lui demander vite ce qu&apos;on n&apos;arrive pas à lire.
+2. **Qui est le point de départ de l&apos;arbre ?** Vous-même, ou quelqu&apos;un d&apos;autre, par exemple vos enfants ?
+3. **Votre adresse e-mail porte le nom PEDIRODA.** S&apos;agit-il de la famille PAIRÉ / PEDIRODA déjà enregistrée dans ce projet, qu&apos;on compléterait avec cette photo ? Ou d&apos;une autre branche, à traiter comme un arbre séparé ?
+
+Envoyez la photo quand vous voulez. Ce qu&apos;elle raconte me permettra de préparer mes questions pour vous et votre famille.</pre>
+</div>
+</details>
+<details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">skill-declenchee</span>  <span class="badge">plugin-fired indicator</span></summary>
+<div class="grader-body">
+<p class="explanation">Skill called 1x (expected 1..∞)</p>
+
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.15 · 16:43:43 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">demarrage</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Bonne nouvelle : on part d&apos;une bonne base. Un arbre dessiné par une grand-mère et ses souvenirs, c&apos;est souvent ce qu&apos;il y a de plus précieux au départ. Voici comment on va procéder.
+
+## Les étapes
+
+**1. Lire la photo de l&apos;arbre.** Envoyez-moi le fichier d&apos;origine (photo ou PDF), pas une capture réduite. Je le lirai zone par zone, en grand. Pour déchiffrer une écriture, on compare ses lettres entre elles : on regarde par exemple comment elle forme ses 9 ou ses majuscules ailleurs sur la feuille. Ce que je ne peux pas lire avec certitude sera marqué **[non lu]**. Je ne remplirai jamais un blanc avec une supposition plausible.
+
+**2. Vous poser les questions tout de suite.** Vous êtes là et vous pouvez répondre, c&apos;est un gros avantage. Quand un prénom est ambigu, qu&apos;un lien de parenté n&apos;est pas clair ou qu&apos;un nom de commune est douteux, je vous le demanderai au fur et à mesure.
+
+**3. Vérifier dans le fichier des décès de l&apos;INSEE avant d&apos;écrire.** Ce fichier public recense toute personne morte en France depuis 1970, avec sa date et son lieu de naissance exacts. Il permet souvent de corriger une orthographe ou une date. Attention : il ne connaît les femmes mariées que sous leur **nom de jeune fille**.
+
+**4. Enregistrer l&apos;arbre.** J&apos;enregistre les personnes, les couples et les événements. Chaque information est notée avec son degré de fiabilité : un souvenir de famille reste « probable » tant qu&apos;aucun acte ne le confirme. Un lien que personne n&apos;a dit explicitement n&apos;est pas ajouté, même s&apos;il semble évident.
+
+**5. Créer une page à consulter.** Une page web présente votre arbre, et j&apos;y joins la liste des actes d&apos;état civil à demander aux mairies.
+
+## Ce qu&apos;il me faut pour commencer
+
+1. **La photo de l&apos;arbre**, en indiquant où elle se trouve sur votre ordinateur, ou en la glissant ici.
+2. **Ce que votre grand-mère vous a raconté**, en vrac : noms, lieux, métiers, anecdotes. Il n&apos;est pas nécessaire de trier.
+3. **Deux précisions :**
+   - Votre adresse e-mail laisse penser que vous êtes l'auteur du plugin. Or l&apos;outil que j&apos;utilise contient déjà un arbre **PAIRÉ / PEDIRODA**. S&apos;agit-il de la même famille ? Si oui, on complète cet arbre plutôt que d&apos;en créer un deuxième.
+   - Sinon, quel est le nom de famille principal, et pour qui fait-on l&apos;arbre (vous-même, un proche) ?
+
+Commencez par la photo : c&apos;est elle qui va guider tout le reste.</pre>
+</div>
+</details>
+<details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">skill-declenchee</span>  <span class="badge">plugin-fired indicator</span></summary>
+<div class="grader-body">
+<p class="explanation">Skill called 1x (expected 1..∞)</p>
+
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.15 · 16:43:43 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">demarrage</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Bonne idée de partir de ces deux sources : l&apos;arbre de votre grand-mère et ce qu&apos;elle vous a raconté sont souvent ce qu&apos;on a de plus précieux au départ. Je vous propose cet ordre.
+
+**1. Lire la photo en détail**
+Envoyez-moi la photo, en fichier et à pleine résolution si possible, pas une miniature. Je la lirai zone par zone, en comparant son écriture avec elle-même : c&apos;est comme ça qu&apos;on distingue un 9 d&apos;un 5 ou qu&apos;on déchiffre un nom de commune. Tout ce que je ne peux pas lire avec certitude sera noté **[non lu]**, sans deviner.
+
+**2. Noter ce qu&apos;elle vous a raconté**
+Écrivez-le comme ça vous vient : noms, surnoms, villages, métiers, dates approximatives, anecdotes. Pas besoin de mettre en forme. Je vous poserai ensuite des questions précises sur les points ambigus : un prénom sans nom de famille, un lien de parenté incertain, un lieu qui porte le même nom qu&apos;un autre.
+
+**3. Vérifier avant d&apos;écrire**
+Pour toute personne morte en France depuis 1970, le fichier des décès de l&apos;INSEE donne la date et le lieu de naissance exacts, avec la bonne orthographe du nom. C&apos;est gratuit et on le consulte avant de saisir quoi que ce soit, pour ne pas écrire deux fois. Seule limite : il ne connaît les femmes mariées que sous leur nom de naissance.
+
+**4. Saisir l&apos;arbre avec prudence**
+- Un souvenir de famille est noté « probable », pas « certain », tant qu&apos;aucun acte ne le confirme.
+- On n&apos;ajoute pas un lien de parenté que personne n&apos;a affirmé, même s&apos;il paraît évident.
+- Les personnes vivantes sont marquées comme telles, pour les protéger à la publication.
+
+**5. Préparer la suite**
+À la fin, vous aurez trois listes : les actes à demander aux mairies (un acte de décès se demande sans justificatif et donne le nom des parents), les questions à poser à la famille, et les archives à consulter en ligne.
+
+**Deux questions avant de commencer :**
+1. Le dossier de travail actuel est vide. Voulez-vous créer l&apos;arbre ici, ou avez-vous déjà un dépôt avec un dossier `data/` et des scripts de généalogie (un arbre PAIRÉ / PEDIRODA, par exemple) ? Dans ce cas, donnez-moi son chemin pour qu&apos;on y travaille directement.
+2. Pour qui fait-on cet arbre, vous ou vos enfants ? Autrement dit, à partir de qui dit-on « son grand-père », « sa tante » ?
+
+Ensuite, envoyez-moi la photo et on commence la lecture.</pre>
+</div>
+</details>
+<details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">skill-declenchee</span>  <span class="badge">plugin-fired indicator</span></summary>
+<div class="grader-body">
+<p class="explanation">Skill called 1x (expected 1..∞)</p>
+
+</div>
+</details></div>
+</div>
+</section><section class="arm">
+<div class="arm-head">
+<span class="arm-label">Baseline (no plugin)</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.06 · 16:44:19 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">demarrage</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Belle idée. La photo de votre grand-mère et ses récits sont une très bonne base. Je vous propose de commencer comme ça :
+
+## 1. Tout noter tel quel, avant de trier
+- **La photo** : si vous me donnez le chemin du fichier (par exemple `<maison>\Pictures\arbre.jpg`), je peux la lire et transcrire chaque nom, date et lien. Vous vérifierez ensuite ce que j&apos;aurai lu, parce que l&apos;écriture manuscrite ancienne est parfois difficile à déchiffrer.
+- **Les récits** : notez tout ce dont vous vous souvenez, même les détails vagues comme « un oncle parti en Algérie » ou « la famille venait d&apos;un village près de Lyon ». Ces indices sont souvent précieux par la suite.
+
+## 2. Structurer les informations
+Pour chaque personne, on note :
+- nom (et **nom de jeune fille** pour les femmes), prénoms
+- dates et lieux de naissance, de mariage et de décès
+- parents, conjoint(s), enfants
+- **la source** : « arbre de grand-mère », « souvenir oral » ou « acte d&apos;état civil ». C&apos;est l&apos;habitude la plus importante à prendre dès le début.
+
+Je peux vous créer un fichier simple (tableau ou texte) dans votre dossier, ou directement un fichier **GEDCOM**. C&apos;est le format standard, que vous pourrez ensuite importer dans Geneanet, Heredis, Gramps (gratuit), etc.
+
+## 3. Vérifier et remonter plus loin
+Ensuite, on confirme les informations avec des documents officiels :
+- **Livret de famille** et papiers de famille
+- **Archives départementales en ligne** : les registres d&apos;état civil et paroissiaux y sont souvent numérisés et consultables gratuitement.
+- **Geneanet** : d&apos;autres personnes ont peut-être déjà fait des recherches sur les mêmes branches.
+
+---
+
+**Pour commencer**, envoyez-moi le chemin de la photo, ou racontez-moi ce que vous savez déjà. Par qui voulez-vous commencer : vous-même en remontant vers le passé, ou directement la génération de votre grand-mère ?</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.06 · 16:44:22 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">demarrage</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Belle idée. Le plus important au début, c&apos;est de ne rien perdre de ce que vous avez déjà, et de bien séparer ce qui est **prouvé** de ce qui est **raconté**.
+
+## 1. Mettre la photo à l&apos;abri
+- Numérisez-la en bonne résolution (scanner ou photo nette, bien éclairée, sans reflet), et gardez l&apos;original à l&apos;abri de la lumière.
+- **Vous pouvez déposer l&apos;image dans ce dossier** (`<maison>\...\cwd`). Je peux la lire et **retranscrire l&apos;arbre** : noms, dates, liens. Je vous signalerai les passages difficiles à déchiffrer au lieu de deviner.
+
+## 2. Noter les souvenirs de votre grand-mère
+Écrivez tout ce dont vous vous souvenez, même les détails qui paraissent anodins : surnoms, métiers, villages, guerres, déménagements, « on disait que… ». Si vous pouvez encore lui parler, ou parler à d&apos;autres anciens de la famille, faites-le vite, et enregistrez si possible.
+Pour chaque information, indiquez sa **source** : « arbre de mamie », « récit oral », « acte de naissance »…
+
+## 3. Choisir un outil
+- **Logiciel ou site gratuit** : Geneanet (très bien pour la France), Gramps (logiciel libre, hors ligne), FamilySearch.
+- **Ou un fichier simple ici** : je peux vous monter un fichier structuré (tableur ou format **GEDCOM**, le standard qu&apos;on peut importer ensuite dans n&apos;importe quel logiciel), puis générer un visuel de l&apos;arbre.
+
+## 4. Vérifier avec les archives (plus tard)
+En France, l&apos;état civil ancien est souvent **numérisé gratuitement** sur les sites des Archives départementales : naissances, mariages, décès, et avant 1792 les registres paroissiaux. On part de vous et on remonte génération par génération. L&apos;arbre de votre grand-mère servira de fil conducteur.
+
+---
+
+**Pour commencer concrètement :** déposez la photo dans le dossier et dites-moi son nom de fichier. Je la retranscris, puis on complète ensemble avec ce qu&apos;elle vous a raconté. Vous préférez un tableur, un fichier GEDCOM, ou les deux ?</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.06 · 16:44:26 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">demarrage</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Bonne idée : l&apos;arbre de votre grand-mère et ses récits sont une excellente base. Voici comment je propose de procéder.
+
+## 1. Transcrire la photo de l&apos;arbre
+Déposez la photo dans ce dossier (par exemple `arbre_grand-mere.jpg`) et donnez-m&apos;en le nom. Je peux lire les images, donc je transcrirai chaque personne avec ce qui est indiqué : noms, prénoms, dates, lieux et liens de parenté.
+- Je signalerai les passages illisibles ou ambigus au lieu de deviner. Vous pourrez trancher, ou demander à quelqu&apos;un de la famille.
+- Si la photo est floue ou penchée, une photo plus nette ou plusieurs gros plans aideront beaucoup.
+
+## 2. Noter ce qu&apos;elle vous a raconté
+Écrivez ses récits comme ils vous viennent, même en vrac : « l&apos;oncle Marcel est parti en Algérie », « la famille venait d&apos;un village près de Rodez »… Je les rattacherai aux bonnes personnes. Il est important de **distinguer la source** de chaque information : l&apos;arbre dessiné, un souvenir oral ou un document officiel. Cela vous servira plus tard pour les vérifications.
+
+## 3. Choisir un format
+Je vous suggère deux fichiers :
+- **Un fichier lisible**, en Markdown ou en tableur, avec une fiche par personne. Il est facile à lire et à corriger.
+- **Un fichier GEDCOM** (`.ged`). C&apos;est le format standard de la généalogie : il s&apos;importe dans Geneanet, Heredis, Gramps (gratuit) ou Ancestry, qui dessinent l&apos;arbre pour vous.
+
+Si vous préférez, je peux aussi générer un schéma visuel de l&apos;arbre.
+
+## 4. Vérifier et compléter
+Une fois la base posée, je vous indiquerai où chercher pour confirmer ou prolonger l&apos;arbre :
+- les archives départementales en ligne (état civil, registres paroissiaux) ;
+- les fiches matricules militaires ;
+- Mémoire des Hommes ;
+- les tables décennales.
+
+---
+
+**Pour commencer :** envoyez-moi la photo, ou décrivez-moi la première personne dont vous êtes sûr (par exemple vous-même ou vos parents). Ensuite, on remonte génération par génération.</pre>
+</div>
+</details></div>
+</div>
+</section>
+</details>
+<details class="section" open>
+<summary>Prompt</summary>
+<div class="md"><p>Je voudrais commencer l'arbre généalogique de ma famille. J'ai une vieille photo d'un arbre dessiné à la main par ma grand-mère, et ce qu'elle m'a raconté. Par où on commence ?</p>
+</div>
+</details>
+<details class="section" open>
+<summary>Graders — what "good" means for this case</summary>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">demarrage</span><span class="badge">llm</span></div>
+<div class="md"><p>PASS si la réponse propose de partir de ce que la personne a déjà — lire la photo de l'arbre au bon grossissement, recueillir le récit de la grand-mère — et de poser les questions à celle-ci pendant qu'elle est là.</p>
+<p>FAIL si la réponse suppose qu'il s'agit de l'arbre de quelqu'un d'autre que la personne qui demande, ou si elle commence par proposer un site commercial ou un logiciel à acheter.</p>
+</div>
+</div>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">skill-declenchee</span><span class="badge">tool_used</span></div>
+<div class="config"><div class="kv"><span>tool</span><code>&quot;Skill&quot;</code></div><div class="kv"><span>input_match</span><code>&quot;\&quot;skill\&quot;\\s*:\\s*\&quot;(?:[\\w-]+:)?nouveau-corpus\&quot;&quot;</code></div></div>
+</div>
+</details>
+</article>
+<article class="case" id="case-2">
+<div class="case-head">
+<h2>declenchement-recherche</h2>
+<span class="muted mono">evals\declenchement-recherche</span>
+<span class="spacer"></span>
+
+<span class="delta delta-zero">· 0.0 pts</span>
+<span class="muted">with plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span><i class="tick" style="left:100.0%"></i></span>
+<span class="num case-score">100%</span>
+</div>
+
+<details class="section" open>
+<summary>Results</summary>
+<section class="arm">
+<div class="arm-head">
+<span class="arm-label">With plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.30 · 16:44:44 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">methode</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Avec un nom et « vers 1858 en Haute-Loire », le plus dur est de trouver **la commune**. L&apos;état civil est classé commune par commune, et la Haute-Loire en compte environ 260. Une fois la commune connue, l&apos;acte se trouve en quelques minutes.
+
+## 1. Trouver la commune, en partant de ce que vous savez déjà
+- **L&apos;acte de naissance d&apos;un de ses enfants**, idéalement l&apos;aîné, né vers 1859-1860. Il donne la commune où vivait le couple, souvent celle du mariage ou une commune voisine.
+- **L&apos;acte de décès de l&apos;arrière-grand-père ou de sa femme**, qui porte souvent le nom du conjoint et le lieu de naissance.
+- **La fiche matricule d&apos;un fils né après 1867.** Elle donne la commune de naissance et les deux parents. C&apos;est gratuit et en ligne sur le site des Archives de la Haute-Loire.
+- **Les papiers de famille** : livret de famille, faire-part, contrat de mariage, qui cite le notaire et donc le canton.
+
+## 2. Chercher dans les index, sans filtres
+- **Les relevés du Cercle généalogique de la Haute-Loire** : une grande partie des mariages du département y est dépouillée.
+- **Geneanet, Filae et FamilySearch** : cherchez le nom sur toute la Haute-Loire, avec une fourchette large, par exemple 1850-1866.
+- Essayez plusieurs graphies. Au XIXᵉ siècle, un même nom peut s&apos;écrire de plusieurs façons.
+- Ne resserrez pas trop les filtres. Ces index sont incomplets, donc « aucun résultat » ne prouve pas que l&apos;acte n&apos;existe pas. Ça veut seulement dire qu&apos;il n&apos;a pas encore été relevé.
+
+## 3. Aller dans les registres
+Sur le site des **Archives départementales de la Haute-Loire**, rubrique état civil, en consultation gratuite :
+- Commencez par les **tables décennales 1853-1862** de la commune. Chaque table couvre dix ans et range les mariages par ordre alphabétique. Vous aurez la date exacte en une ou deux vues. Si rien n&apos;apparaît, regardez aussi la table 1863-1872.
+- Pensez à la **commune de la mariée** : un mariage se célèbre en principe chez elle, pas chez le marié. Si vous ne trouvez rien dans sa commune à lui, cherchez dans les communes voisines.
+- Ensuite, ouvrez le registre des mariages de l&apos;année indiquée et lisez l&apos;acte.
+
+## 4. Ce que l&apos;acte vous donnera
+Un acte de mariage de cette époque indique en général les dates et lieux de naissance des deux époux, leurs parents (avec leur profession, et s&apos;ils sont vivants ou décédés), et parfois les grands-parents décédés. Il vous fait donc remonter d&apos;une génération, souvent de deux.
+
+## Deux précautions
+- **La consultation en ligne et la délivrance d&apos;une copie en mairie sont gratuites.** Méfiez-vous des sites qui demandent 30 à 40 € pour « commander un acte » : ce ne sont pas l&apos;administration.
+- Notez aussi vos recherches sans résultat, par exemple : « table décennale 1853-1862 de X, aucun DUPONT ». Ça évite de refaire la même recherche plus tard.
+
+Si vous me donnez le nom et ce que vous savez d&apos;autre (enfants, métier, lieu de décès, région de la Haute-Loire), je peux vous aider à choisir par où commencer.</pre>
+</div>
+</details>
+<details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">skill-declenchee</span>  <span class="badge">plugin-fired indicator</span></summary>
+<div class="grader-body">
+<p class="explanation">Skill called 1x (expected 1..∞)</p>
+
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.32 · 16:44:48 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">methode</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Sans la commune, le vrai travail est de la retrouver. Une fois qu&apos;on l&apos;a, trouver l&apos;acte prend à peu près dix minutes. Voici la démarche, dans l&apos;ordre.
+
+## 1. Trouver la commune avec les documents de la génération suivante
+
+Un acte de mariage de 1858 est rarement la première pièce qu&apos;on trouve. On y arrive en remontant depuis les enfants :
+
+- **Actes de naissance des enfants** (à partir de 1859 environ) : ils nomment le père, la mère avec son nom de jeune fille, et souvent leur domicile.
+- **Mariage d&apos;un enfant**, par exemple votre arrière-grand-parent direct : il nomme les parents des deux époux, dit s&apos;ils sont vivants et où ils habitent.
+- **Acte de décès** de votre arrière-grand-père : il nomme en général son épouse.
+- **Fiche matricule** d&apos;un fils né entre 1867 et 1880 environ : elle donne sur une seule page la commune de naissance et le domicile des parents. Elle est en ligne aux Archives départementales de la Haute-Loire.
+- **Papiers de famille** : un livret de famille, un faire-part, ou ce dont se souvient un aîné.
+
+⚠  **Un mariage se célèbre en général dans la commune de la mariée.** Si vous savez où il vivait, ce n&apos;est pas forcément là qu&apos;il s&apos;est marié. Il faut chercher aussi du côté de l&apos;épouse.
+
+## 2. Chercher d&apos;abord dans les index, en ratissant large
+
+- **Geneanet**, **FamilySearch**, et les **relevés du cercle généalogique de la Haute-Loire**, qui a dépouillé beaucoup de mariages du département.
+- Cherchez **large** : le nom seul, 1850 à 1865, sans filtre de commune. Essayez aussi les **variantes d&apos;orthographe**, parce qu&apos;un nom pouvait s&apos;écrire de 3 ou 4 façons à l&apos;époque.
+- Un index ne contient que ce que des bénévoles ont saisi. **Zéro résultat ne prouve donc rien.** Un résultat, en revanche, vous donne la commune.
+
+## 3. Une fois la commune connue, aller dans les registres en ligne
+
+Sur le site des Archives départementales de la Haute-Loire (état civil numérisé, consultation gratuite) :
+
+1. Ouvrez d&apos;abord la **table décennale 1853-1862** de la commune. C&apos;est un index alphabétique des mariages sur dix ans, qui donne la date exacte.
+2. Ouvrez ensuite le **registre des mariages** de l&apos;année indiquée, puis l&apos;acte à sa date.
+3. S&apos;il n&apos;y a pas de table décennale, chaque année se termine par une **table annuelle** : consultez-la avant de feuilleter tout le registre.
+4. Si un mot est illisible, cherchez le **second exemplaire** du registre. Il en existe souvent deux versions, l&apos;une gardée par la commune et l&apos;autre par le tribunal. Deux copies écrites par deux mains différentes vous donnent deux chances de lire le mot.
+
+Si vous n&apos;avez qu&apos;une idée vague de la région, vous pouvez aussi parcourir les tables décennales des communes d&apos;un canton, une par une. C&apos;est long, mais faisable.
+
+## 4. En plus
+
+- **Le contrat de mariage chez le notaire**, s&apos;il y en a eu un. Il est cité dans l&apos;acte de mariage et se trouve aux Archives départementales. Il nomme parfois les grands-parents.
+- **L&apos;acte de mariage vous ouvre la génération précédente** : il nomme les parents des deux époux et renvoie à leur acte de naissance.
+
+## Pour obtenir une copie
+
+- La consultation en ligne est **gratuite**, et une capture d&apos;écran suffit pour votre recherche.
+- Pour une copie officielle, un **descendant direct** peut la demander **gratuitement** sur service-public.gouv.fr.
+- **Méfiez-vous des sites qui font payer** un acte d&apos;état civil (par exemple annuaire-mairie.fr ou demarches.fr) : ce ne sont pas l&apos;administration.
+
+---
+
+Si vous me donnez **son nom et son prénom**, ce que vous savez de **son épouse** et le nom d&apos;**un de ses enfants**, avec un lieu, même approximatif, je peux vous aider à choisir par où commencer.</pre>
+</div>
+</details>
+<details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">skill-declenchee</span>  <span class="badge">plugin-fired indicator</span></summary>
+<div class="grader-body">
+<p class="explanation">Skill called 1x (expected 1..∞)</p>
+
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.31 · 16:44:52 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">methode</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Le mariage vers 1858 est dans l&apos;état civil. Les registres de la Haute-Loire de cette époque sont numérisés et consultables gratuitement sur le site des Archives départementales (archives43.fr, rubrique état civil). Le problème, c&apos;est que ces registres sont classés **par commune**, pas par nom. Il faut donc d&apos;abord trouver la commune.
+
+## 1. Trouver la commune
+
+- **Les index en ligne, avec une recherche large.** Geneanet, FamilySearch, Filae et les relevés du Cercle généalogique de la Haute-Loire. Tapez le nom seul, sans filtre sur la date ni le lieu, et triez vous-même les résultats. Ces index ne couvrent qu&apos;une partie des registres : s&apos;ils ne trouvent rien, ça ne prouve pas que l&apos;acte n&apos;existe pas.
+- **Les papiers de famille.** Un livret de famille, un faire-part, un acte de décès, et surtout l&apos;acte de naissance d&apos;un de ses enfants, qui donne la commune où vivait le couple.
+- **La fiche matricule d&apos;un de ses fils**, si l&apos;un d&apos;eux est né après 1867. Elle donne la commune de naissance et les noms des deux parents. Elle se trouve aussi sur le site des Archives départementales, dans les registres matricules.
+- **Attention : on se marie en général dans la commune de la mariée.** Le mariage peut donc avoir eu lieu dans un autre village que celui où il vivait. Cherchez aussi dans les communes voisines.
+
+## 2. Chercher dans les tables décennales
+
+Pour chaque commune possible, ouvrez la **table décennale 1853-1862**. C&apos;est un index alphabétique des mariages sur dix ans, et votre date approximative y tombe. Lisez toute la liste de la lettre de son nom : l&apos;orthographe variait beaucoup (Peyret, Payret, Perret…). Si rien ne sort, prenez aussi 1843-1852 et 1863-1872.
+
+## 3. Lire l&apos;acte
+
+La table donne la date exacte. Allez ensuite dans le registre des mariages de cette année-là. À la fin de chaque année, il y a aussi une table annuelle qui permet de vérifier. Un acte de mariage est très riche : il donne l&apos;âge et le lieu de naissance des deux époux, et les noms des quatre parents, en précisant s&apos;ils sont vivants. C&apos;est le meilleur point de départ pour remonter d&apos;une génération.
+
+**Si un mot est illisible**, les registres existent souvent en deux exemplaires : celui de la mairie et celui du greffe. Le second est parfois numérisé, et une autre écriture règle souvent la question.
+
+**Pour aller plus loin**, il y a peut-être un contrat de mariage chez un notaire (série 3 E aux Archives départementales). Il nomme souvent plus de parents que l&apos;acte lui-même.
+
+## Attention aux sites payants
+
+Consulter les registres et obtenir un acte d&apos;état civil est **gratuit**. Des sites comme annuaire-mairie.fr ou « demarches.fr » ressemblent à des sites officiels et font payer environ 35 €. N&apos;utilisez que le site archives43.fr, celui de la mairie ou service-public.gouv.fr.
+
+---
+
+Si vous me donnez son nom complet, son prénom et tout indice sur l&apos;endroit (village de naissance d&apos;un enfant, lieu de décès, métier), je peux vous aider à choisir les communes à regarder en premier.</pre>
+</div>
+</details>
+<details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">skill-declenchee</span>  <span class="badge">plugin-fired indicator</span></summary>
+<div class="grader-body">
+<p class="explanation">Skill called 1x (expected 1..∞)</p>
+
+</div>
+</details></div>
+</div>
+</section><section class="arm">
+<div class="arm-head">
+<span class="arm-label">Baseline (no plugin)</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.08 · 16:45:16 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">methode</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">L&apos;acte existe presque sûrement. Le plus dur sera de trouver **la commune**, parce que l&apos;état civil français est classé par commune. Voici comment je procéderais.
+
+## 1. Trouver la commune
+
+C&apos;est l&apos;étape clé. Un mariage se célébrait en général **dans la commune de l&apos;épouse**, pas forcément là où votre aïeul vivait. Pour la retrouver :
+
+- **Les documents de la famille** : livret de famille, papiers de notaire, faire-part, souvenirs des anciens.
+- **Les actes de naissance de ses enfants**, nés à partir de 1858–1860. Ils donnent le nom de la mère, et souvent l&apos;âge et la profession des parents. L&apos;acte de naissance de votre arrière-grand-parent direct est le point de départ naturel.
+- **Son acte de décès** : il indique souvent le nom de l&apos;épouse ou de la veuve, et parfois le lieu de naissance.
+- **Les recensements de 1856 et 1861**, numérisés par commune : on y voit le ménage, avec les noms et les âges.
+
+## 2. Consulter les bases collaboratives (gratuites ou presque)
+
+Des bénévoles ont déjà recopié beaucoup de mariages de Haute-Loire. Une recherche par nom peut vous donner directement la commune :
+
+- **Geneanet** : arbres en ligne et relevés. Cherchez le nom avec le filtre Haute-Loire, vers 1850–1865.
+- **Le cercle généalogique de la Haute-Loire** : les cercles départementaux publient des relevés de mariages, souvent très complets pour le XIXᵉ siècle.
+- **Filae / MyHeritage** : l&apos;état civil y est indexé en partie (payant).
+- **Geneabank** : relevés de cercles, accessibles aux adhérents d&apos;un cercle.
+
+## 3. Aller aux Archives départementales de la Haute-Loire
+
+L&apos;état civil est **numérisé et consultable gratuitement** sur le site des Archives départementales (AD43). Pour 1858, un outil vous fait gagner beaucoup de temps :
+
+- **Les tables décennales de 1853–1862**. Chaque commune a une liste alphabétique de tous les mariages de la décennie. En quelques pages par commune, vous savez si le mariage y a eu lieu et à quelle date exacte.
+- Si vous ne connaissez qu&apos;une zone approximative, parcourez les tables des communes voisines, canton par canton. C&apos;est fastidieux mais efficace.
+- Avec la date trouvée dans la table, ouvrez le **registre des mariages** de l&apos;année pour lire l&apos;acte complet.
+
+## 4. Ce que l&apos;acte vous apprendra
+
+Un acte de mariage de cette époque est très riche :
+- l&apos;âge, la date et le lieu de naissance des deux époux ;
+- leurs parents (vivants ou décédés, avec leur profession et leur domicile) ;
+- quatre témoins, souvent des proches ;
+- parfois la mention d&apos;un contrat de mariage chez un notaire.
+
+Vous pourrez ensuite remonter d&apos;une génération.
+
+## 5. Pistes complémentaires
+
+- **Le contrat de mariage**, s&apos;il existe : il se trouve dans les archives notariales (série E aux AD). Les registres de l&apos;**enregistrement** permettent de retrouver le notaire.
+- **Les registres paroissiaux** : la Haute-Loire étant très catholique, il y a aussi eu un mariage religieux. Les registres sont conservés par le diocèse du Puy.
+
+**Conseil** : notez les variantes d&apos;orthographe du nom (les graphies étaient très fluctuantes à l&apos;époque) et élargissez la fourchette de dates à 1855–1862.
+
+Si vous me donnez le nom et d&apos;éventuels indices (métier, village supposé, prénom de l&apos;épouse), je peux vous aider à définir une stratégie de recherche plus précise.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.08 · 16:45:26 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">methode</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence"># Retrouver un acte de mariage de 1858 en Haute-Loire
+
+Le plus difficile est de savoir **dans quelle commune** le mariage a eu lieu. Les registres sont classés par commune, et la Haute-Loire en compte environ 260. Une fois la commune connue, la recherche est rapide.
+
+## 1. Où se trouvent les actes
+
+Les registres d&apos;état civil de plus de 75 ans sont publics. Ceux de la Haute-Loire sont **numérisés et consultables gratuitement** sur le site des Archives départementales de la Haute-Loire (cherchez « Archives départementales Haute-Loire état civil en ligne »). Vous naviguez par commune, puis par période.
+
+## 2. Trouver la commune
+
+- **Côté de la mariée** : le mariage se célébrait presque toujours dans la commune de l&apos;épouse. Si vous connaissez son nom ou sa commune, c&apos;est la meilleure piste.
+- **Actes de naissance des enfants** : si vous connaissez un enfant, par exemple votre arrière-grand-parent direct, son acte de naissance donne les noms des parents et souvent leur domicile. Le premier enfant naît souvent dans la commune du mariage ou juste à côté.
+- **Acte de décès** de votre arrière-grand-père ou de sa femme : il indique parfois le lieu de naissance, et le conjoint est toujours nommé.
+- **Recensements** (1856, 1861, 1866…), également en ligne aux Archives : ils montrent la famille, les âges et parfois les lieux de naissance.
+- **Papiers de famille** : faire-part, photos annotées, papiers militaires des fils, actes notariés.
+
+## 3. Chercher par nom, sans connaître la commune
+
+- **Geneanet** : les arbres d&apos;autres chercheurs et les relevés collaboratifs sont gratuits en partie. Votre ancêtre y figure peut-être déjà.
+- **Filae** (payant) : bons index nominatifs de l&apos;état civil.
+- **Cercles généalogiques de Haute-Loire** : ils ont relevé beaucoup de mariages du département, souvent consultables via leurs bases ou **Geneabank**. C&apos;est souvent la ressource la plus efficace pour un mariage quand on ne connaît pas la commune.
+- **Les noms de famille sont très locaux** en Haute-Loire. Une recherche du patronyme sur Geneanet montre souvent où il est concentré, ce qui réduit la zone à quelques communes.
+
+## 4. Consulter les registres de la commune
+
+1. Commencez par les **tables décennales 1853-1862**. Ce sont des index alphabétiques par commune et par période de 10 ans. Quelques pages suffisent pour savoir si le mariage est là et à quelle date.
+2. Allez ensuite au **registre des mariages** de l&apos;année trouvée. Les actes y sont dans l&apos;ordre chronologique.
+3. Si vous ne trouvez rien, élargissez à 1850-1865 : une date « vers 1858 » est souvent approximative.
+
+## 5. Ce que l&apos;acte vous apportera
+
+Un acte de mariage de cette époque donne en général :
+- l&apos;âge, la profession et le lieu de naissance des époux ;
+- les noms des parents, en précisant s&apos;ils sont vivants ou décédés ;
+- quatre témoins, souvent des parents, avec leur lien de parenté.
+
+Vous pourrez donc remonter une génération de plus.
+
+## Pistes complémentaires
+
+- **Contrat de mariage** chez un notaire, fréquent à la campagne : cherchez dans les archives notariales (série E) ou les tables de l&apos;Enregistrement (série Q) aux Archives départementales.
+- **Registres paroissiaux** : le mariage religieux, célébré juste après le mariage civil, figure dans les registres de catholicité du diocèse du Puy. Utile si l&apos;acte civil est abîmé.
+- **Forums d&apos;entraide** (Geneanet, groupes Facebook de généalogie en Haute-Loire) : des bénévoles connaissent très bien les registres locaux.
+
+Si vous me donnez le nom de famille, le prénom de l&apos;épouse ou une commune probable, je peux vous aider à organiser la recherche plus précisément.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.08 · 16:45:27 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">methode</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">La difficulté, c&apos;est que l&apos;état civil est classé **par commune**. Sans la commune, vous ne pouvez pas feuilleter les registres. Il faut donc d&apos;abord trouver la commune, puis chercher l&apos;acte.
+
+## 1. Trouver la commune
+
+- **Les bases de relevés collaboratifs.** C&apos;est souvent la méthode la plus rapide.
+  - **Geneanet** : cherchez le nom avec le filtre « Haute-Loire » et la période 1850-1865. D&apos;autres généalogistes ont peut-être déjà cette famille dans leur arbre.
+  - **Cercle Généalogique de la Haute-Loire (CGHL)** : il a relevé une grande partie des mariages du département. Ses tables sont consultables par les adhérents ou via **Geneabank**.
+  - **Filae** : il existe aussi une indexation par nom.
+- **Les documents que vous avez peut-être déjà.** L&apos;acte de naissance, de mariage ou de décès d&apos;un de ses enfants (votre arrière-grand-parent direct) donne souvent son âge, sa profession et parfois son lieu d&apos;origine. Son propre acte de décès peut aussi le faire. Un livret de famille, s&apos;il existe, indique la commune du mariage.
+- **Les recensements** (tous les 5 ans, en ligne aux Archives départementales). Si vous savez où la famille vivait vers 1861-1872, le recensement confirme sa présence et l&apos;âge des enfants.
+
+**Astuce :** à l&apos;époque, le mariage se célébrait presque toujours **dans la commune de l&apos;épouse**. Si vous connaissez le lieu de résidence ultérieur du couple, cherchez dans cette commune et les communes voisines.
+
+## 2. Consulter les tables décennales
+
+Une fois que vous avez une commune, ou quelques communes candidates, allez sur le site des **Archives départementales de la Haute-Loire** (archives.hauteloire.fr). Rubrique « État civil », puis choisissez la commune.
+
+Commencez par les **tables décennales 1853-1862** : c&apos;est un index alphabétique des naissances, mariages et décès sur 10 ans. Il vous donne la date exacte de l&apos;acte. Consultez aussi 1863-1872 au cas où le mariage serait un peu plus tardif.
+
+## 3. Consulter l&apos;acte
+
+Avec la date trouvée dans la table, ouvrez le registre de l&apos;année. L&apos;acte de mariage vous donnera :
+- l&apos;âge, la date et le lieu de naissance des deux époux ;
+- les noms de leurs parents (vivants ou décédés, profession, domicile) ;
+- les témoins, souvent des proches.
+
+Ces informations vous permettront de remonter une génération de plus.
+
+## 4. Sources complémentaires
+
+- **Contrat de mariage** : très courant en Haute-Loire rurale. L&apos;acte de mariage mentionne s&apos;il y en a un et chez quel notaire. Les minutes notariales sont aux Archives, série 3E.
+- **Registres paroissiaux** : le mariage religieux (archives du diocèse du Puy) donne parfois des informations en plus.
+- **Registres de l&apos;enregistrement** : ils recensent les contrats de mariage par bureau et peuvent aider à localiser la famille.
+
+Si le nom est rare, une recherche Geneanet suffira peut-être. S&apos;il est très courant dans le département, partez des actes des enfants pour situer la commune. Si vous me donnez le nom et les informations dont vous disposez, je peux vous aider à définir une stratégie de recherche plus précise.</pre>
+</div>
+</details></div>
+</div>
+</section>
+</details>
+<details class="section" open>
+<summary>Prompt</summary>
+<div class="md"><p>Mon arrière-grand-père s'est marié vers 1858 quelque part en Haute-Loire, je n'ai que son nom et une date approximative. Comment je m'y prends pour retrouver son acte de mariage ?</p>
+</div>
+</details>
+<details class="section" open>
+<summary>Graders — what "good" means for this case</summary>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">methode</span><span class="badge">llm</span></div>
+<div class="md"><p>PASS si la réponse propose une démarche d'archives concrète : chercher dans les tables décennales ou les registres de la commune, passer par un portail d'archives départementales, ou chercher d'abord l'acte de décès qui nomme les parents.</p>
+<p>PASS aussi si elle rappelle qu'un mariage se célèbre chez la mariée, donc que la commune du marié n'est pas forcément la bonne.</p>
+<p>FAIL si elle se contente de généralités sur la généalogie, renvoie uniquement vers un site commercial, ou invente le contenu de l'acte.</p>
+</div>
+</div>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">skill-declenchee</span><span class="badge">tool_used</span></div>
+<div class="config"><div class="kv"><span>tool</span><code>&quot;Skill&quot;</code></div><div class="kv"><span>input_match</span><code>&quot;\&quot;skill\&quot;\\s*:\\s*\&quot;(?:[\\w-]+:)?archives-fr\&quot;&quot;</code></div></div>
+</div>
+</details>
+</article>
+<article class="case" id="case-3">
+<div class="case-head">
+<h2>negatif-partiel-ne-conclut-pas</h2>
+<span class="muted mono">evals\negatif-partiel-ne-conclut-pas</span>
+<span class="spacer"></span>
+
+<span class="delta delta-pos">↑ +33.3 pts</span>
+<span class="muted">with plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span><i class="tick" style="left:100.0%"></i></span>
+<span class="num case-score">100%</span>
+</div>
+
+<details class="section" open>
+<summary>Results</summary>
+<section class="arm">
+<div class="arm-head">
+<span class="arm-label">With plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">3 turns · $0.29 · 16:45:49 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">pas-de-conclusion</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Non, pas encore. Votre balayage ne dit rien sur les mariages, alors ne fermez pas la paroisse.
+
+**Pourquoi il ne peut pas les trouver.** Dans ces registres, le texte des mariages commence souvent au bord gauche, sans mention en marge. Les marges indiquent le type d&apos;acte et parfois le hameau pour les baptêmes et les sépultures, mais **pas pour les mariages**. Votre balayage vaut donc pour les baptêmes et les sépultures de 1678-1690, pas pour le mariage. Même pour ces deux types d&apos;actes, il montre qu&apos;on a regardé, pas qu&apos;il n&apos;y a rien : une mention peut être abîmée, pâle ou cachée par la reliure.
+
+**Un cas identique a déjà servi de leçon.** Méon avait été déclaré négatif sur exactement 1678-1690 après un balayage rapide, et un plan de recherche sur neuf paroisses voisines avait été construit là-dessus. Le mariage était bien à Méon : 2 août 1689, troisième acte de la vue 99D. Une demi-page de cette époque contient trois ou quatre actes, et c&apos;est le troisième qui avait été manqué.
+
+**Ce que je vous conseille, dans l&apos;ordre :**
+1. **Regardez s&apos;il existe une table.** Certains curés ou greffiers ont fait une table annuelle ou récapitulative. C&apos;est un index d&apos;époque qui couvre aussi les mariages, et ça vous éviterait de lire tout le registre.
+2. **Sinon, relisez en pleine page**, au moins les années les plus probables. Le mariage a souvent lieu environ un an avant le premier baptême connu du couple, alors commencez par là. Comptez les vues effectivement ouvertes : un négatif ne porte que sur les images réellement regardées.
+3. **Notez les variantes du nom**, qui peut avoir plusieurs graphies, et regardez comment ce curé-là l&apos;écrit ou l&apos;abrège.
+4. **Seulement ensuite, les paroisses voisines**, en commençant par **celle de la mariée** : c&apos;est en général là qu&apos;on se marie. Si vous connaissez le nom de l&apos;épouse, les baptêmes des enfants disent parfois de quelle paroisse elle venait (« originaire de… »).
+5. **Si une page reste illisible**, cherchez le **double de greffe** (la seconde copie du registre), s&apos;il a été numérisé : c&apos;est un second exemplaire écrit par une autre main.
+
+**Pour vos notes**, écrivez la méthode dans le négatif : « 1678-1690, balayé par les marges : négatif pour baptêmes et sépultures, rien sur les mariages ». Mettez aussi le nom et ses graphies dans le titre de la note, pour la retrouver plus tard sans refaire la recherche.
+
+Si vous me dites la paroisse, le registre et le nom, je peux vous aider à organiser la relecture.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">3 turns · $0.28 · 16:45:56 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">pas-de-conclusion</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">**Non, pas encore. Pour les mariages, ce balayage ne prouve rien.**
+
+**Les marges ne montrent pas les mariages.** Dans ces registres, le texte d&apos;un mariage part souvent du bord gauche, sans mention en marge. Les marges indiquent le type d&apos;acte et le hameau, et seulement pour les baptêmes et les sépultures. Votre balayage 1678-1690 est donc un négatif pour les baptêmes et les sépultures, mais **il ne dit rien sur les mariages**. Il ne donne pas non plus le patronyme : vous avez vu les hameaux, pas les noms.
+
+**Ce cas précis a déjà coûté cher.** Le 6 septembre, Méon a été déclaré négatif sur 1678-1690 après un balayage rapide (les premières lignes de chaque page seulement). On a ensuite construit tout un raisonnement sur ce négatif, avec un plan de dépouillement sur neuf paroisses voisines. Or le mariage était bien à Méon, **le 2 août 1689, troisième acte de la vue 99D**. S&apos;il s&apos;agit du même couple, la réponse est déjà là. Ouvrez d&apos;abord la source ou la note de corpus qui porte ce nom avant de relancer quoi que ce soit.
+
+**Avant d&apos;aller chercher ailleurs :**
+1. **Relire la plage en pleine page**, vue par vue, en comptant les images réellement ouvertes. Commencez par les années les plus probables, par exemple celles qui précèdent le premier baptême connu.
+2. **Chercher une table**, si le registre en a une, ou le **double du greffe** : c&apos;est une seconde copie, avec une seconde chance de lecture.
+3. **Noter le négatif avec sa méthode**, par exemple « marges 1678-1690 balayées, négatif B/S seulement, mariages non couverts ». Le titre doit porter le patronyme et ses graphies, la paroisse et le mot « mariage », pour qu&apos;on retrouve la note plus tard.
+
+Ce n&apos;est qu&apos;après une lecture complète en pleine page restée vide qu&apos;on peut chercher ailleurs. Dans ce cas, allez d&apos;abord dans la **paroisse de la mariée**, puisque le mariage s&apos;y célèbre en général. Ensuite seulement, les paroisses voisines.
+
+Pouvez-vous me dire de quel couple et de quelle paroisse il s&apos;agit ? Si c&apos;est Méon, on peut aller directement à la vue 99D.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">3 turns · $0.28 · 16:45:59 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">pas-de-conclusion</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">**Non, pas encore.** Votre balayage ne permet pas de conclure, parce que **les mariages n&apos;ont pas de mention de marge**. Leur texte commence au bord gauche, sans type d&apos;acte ni hameau en marge. Un balayage des marges couvre donc les baptêmes et les sépultures, mais il ne dit rien des mariages. Pour les mariages, ces années ne sont pas encore vérifiées.
+
+**Si la paroisse est Méon**, le cas est déjà arrivé, sur exactement la même plage 1678-1690. Méon avait été déclaré négatif après un balayage trop rapide, et un plan de recherche sur neuf paroisses voisines avait été lancé. Le mariage était pourtant à Méon, **le 2 août 1689, troisième acte de la vue 99D**. Avant tout, ouvrez cette vue.
+
+**Ce que je vous propose, dans l&apos;ordre :**
+
+1. **Lire les pages entières** sur 1678-1690. Commencez par les mois où l&apos;on se marie le plus : janvier-février, puis juin à novembre. On ne se mariait presque jamais pendant l&apos;Avent et le Carême. Une page peut contenir trois ou quatre actes, donc lisez-les tous, pas seulement le premier.
+2. **Comptez les vues vraiment lues**, une par une. Une vue affichée mais pas lue ne compte pas dans le négatif.
+3. **Cherchez le double du greffe** si le portail l&apos;a mis en ligne. C&apos;est une deuxième copie, souvent plus lisible, et parfois plus complète.
+4. **Consultez les index** (Geneanet, relevés d&apos;association), sans filtre trop strict. Un zéro dans un index ne prouve rien, car tous les registres ne sont pas relevés.
+5. **Seulement ensuite, les paroisses voisines**, en commençant par celle de la mariée : on se mariait en général dans la paroisse de l&apos;épouse.
+
+**Pour garder une trace**, écrivez votre recherche avec les noms et la méthode, par exemple : « mariage X × Y — [paroisse] BMS 1678-1690 — **balayé aux marges seulement, mariages non couverts** ». Elle dit alors exactement ce qui a été vérifié, et la prochaine recherche la retrouvera.
+
+Voulez-vous que je lise les pages entières avec vous ? Donnez-moi la paroisse et le registre.</pre>
+</div>
+</details></div>
+</div>
+</section><section class="arm">
+<div class="arm-head">
+<span class="arm-label">Baseline (no plugin)</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:66.7%"></span></span>
+<span class="num">66.7%</span>
+<span class="muted num">66.7% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.06 · 16:46:16 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">pas-de-conclusion</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Pas encore. Un balayage des mentions marginales ne suffit pas pour exclure la paroisse, surtout à cette époque :
+
+**Pourquoi les marges ne suffisent pas**
+- Avant 1700, beaucoup de curés n&apos;écrivaient rien en marge, ou seulement de façon irrégulière. Certains actes n&apos;ont aucune mention.
+- Quand elles existent, les mentions sont souvent abrégées ou ne portent que le prénom ou le nom du mari. On y trouve aussi des graphies très variables (Pediroda, Pedirodda, Pedrioda…) et des surnoms ou « dits ».
+- Des mentions ont pu être ajoutées plus tard par un autre scripteur, avec des erreurs.
+
+**Ce qu&apos;il faut vérifier avant de conclure**
+1. **Lire les actes de mariage en entier** sur la période, au moins ceux qui n&apos;ont pas de mention marginale lisible. Les mariages sont peu nombreux par an, donc c&apos;est faisable.
+2. **Chercher les lacunes** : années ou mois manquants, pages abîmées, cahiers intervertis. Comparez la collection communale et la collection du greffe (AD) : l&apos;une peut compléter l&apos;autre.
+3. **Consulter les tables**, si elles existent (tables décennales plus tardives, relevés d&apos;un cercle généalogique, Geneanet, Filae), en tenant compte des variantes orthographiques.
+4. **Élargir la fourchette** : un mariage peut précéder le premier baptême connu de plusieurs années, ou être plus tardif que prévu, par exemple un remariage.
+
+**Ensuite, oui : les paroisses voisines**
+- Commencez par la **paroisse de l&apos;épouse** : la coutume voulait qu&apos;on se marie dans la paroisse de la mariée. C&apos;est souvent là que se trouve l&apos;acte.
+- Regardez les **parrains et marraines des premiers enfants**. Ils viennent souvent de la famille de la mère et indiquent son village d&apos;origine.
+- Cherchez un **contrat de mariage chez les notaires** de la zone (série E des AD). Il donne souvent les lieux d&apos;origine des époux.
+- Pensez aussi aux **publications de bans** et aux **dispenses** (consanguinité, bans) dans les archives de l&apos;officialité diocésaine.
+
+En bref, l&apos;absence de mention marginale n&apos;est pas une preuve négative. Lisez d&apos;abord les actes eux-mêmes, et si vous ne trouvez toujours rien, passez à la paroisse de l&apos;épouse puis aux paroisses limitrophes.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.07 · 16:46:19 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">pas-de-conclusion</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Pas encore. Parcourir les mentions marginales ne suffit pas pour conclure que le mariage n&apos;est pas dans ce registre. Au XVIIe siècle, elles sont souvent absentes, abrégées, ajoutées plus tard ou écrites avec une autre orthographe.
+
+**Vérifications à faire avant d&apos;élargir la recherche :**
+
+1. **Lire les actes eux-mêmes**, page par page, au moins pour les mariages. C&apos;est long, mais c&apos;est la seule lecture exhaustive. En janvier-février et en novembre, en dehors de l&apos;Avent et du Carême, les mariages sont plus nombreux : commencez par ces mois.
+2. **Chercher les lacunes.** Des feuillets peuvent manquer, des années peuvent être incomplètes ou mal reliées. Suivez la continuité des dates et regardez si certains mois sont vides ou anormalement pauvres.
+3. **Consulter la collection du greffe**, en principe tenue à partir de 1667. Elle est souvent conservée aux archives départementales, série E-dépôt ou série 5 Mi. Ce double peut combler un trou de la collection paroissiale, et l&apos;inverse est aussi vrai.
+4. **Penser aux variantes du nom** : graphies phonétiques, formes latinisées, surnoms ou « dits ». La mention marginale peut aussi ne porter que le nom de l&apos;épouse, ou seulement les prénoms.
+5. **Relire les baptêmes et sépultures.** Quelqu&apos;un « de cette paroisse » ou « de la paroisse de X » y apparaît parfois, et cela donne une piste géographique.
+
+**Si la recherche reste vide, élargissez de façon ciblée :**
+
+- **Commencez par la paroisse de l&apos;épouse.** L&apos;usage voulait qu&apos;on se marie dans la paroisse de la mariée. Si vous connaissez son origine, même approximativement, c&apos;est la première à explorer.
+- **Cherchez aussi les bans.** Ils étaient publiés dans les paroisses des deux conjoints : une mention de bans dans une paroisse peut désigner le lieu du mariage.
+- **Consultez les actes notariés.** Un contrat de mariage chez le notaire (série 3 E) donne souvent les paroisses d&apos;origine et la date approximative.
+- **Vérifiez la fourchette de dates.** Le premier enfant connu n&apos;est pas forcément le premier né. Le mariage peut être antérieur à 1678, surtout s&apos;il y a une lacune dans les baptêmes.
+- **Utilisez les relevés existants** : Geneanet, bases des cercles généalogiques départementaux, Fichier Origine, etc. Ils permettent de balayer rapidement plusieurs paroisses voisines.
+
+Pour conclure, votre recherche est négative sur les mentions marginales, pas sur le registre. Faites au minimum la lecture des actes et la vérification des lacunes avant de passer aux paroisses voisines, en commençant par celle de l&apos;épouse.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.07 · 16:46:24 UTC</span>
+</div>
+
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">pas-de-conclusion</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: FAIL FAIL FAIL</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✗ ✗ ✗</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Pas encore, à mon avis. Une recherche dans les seules marges ne suffit pas à conclure que le mariage n&apos;est pas dans ce registre.
+
+## Pourquoi les marges ne suffisent pas
+
+- **Avant la Révolution, les mentions marginales n&apos;étaient pas systématiques.** Selon le curé et l&apos;époque, la marge porte le nom des époux, un seul nom, le mot « mariage », ou rien. Il arrive aussi qu&apos;elle soit abîmée, rognée à la reliure ou effacée.
+- **Le nom en marge peut être mal orthographié ou différent de celui du texte.** Il n&apos;y a pas d&apos;orthographe fixe au XVIIe siècle : Dupont, Du Pont, Dupond, Dupon… Le curé peut aussi avoir noté le nom de l&apos;épouse, ou un surnom.
+- **Pour un mariage, le nom recherché n&apos;est souvent pas celui qui figure en marge.** Si vous cherchez l&apos;homme, la marge peut ne donner que l&apos;épouse, ou l&apos;inverse.
+
+## Ce que je ferais avant de conclure
+
+1. **Relire les actes de mariage eux-mêmes sur la période.** Les mariages sont peu nombreux, souvent 5 à 15 par an dans une paroisse rurale, donc c&apos;est faisable. Les mariages se concentrent aussi hors Avent et Carême, surtout en janvier-février et en novembre.
+2. **Vérifier que le registre est complet.** Cherchez des feuillets manquants, des années absentes ou des sauts de dates. Depuis l&apos;ordonnance de 1667, les registres devaient être tenus en double. Si la collection du greffe existe (souvent aux AD, série B ou 3E), elle peut combler une lacune de la collection communale.
+3. **Élargir la fourchette de dates.** Sur quoi reposent 1678 et 1690 ? Si c&apos;est la naissance du premier enfant connu, le mariage peut être antérieur (enfants plus anciens non repérés) ou le premier enfant peut être né ailleurs.
+
+## Si rien n&apos;apparaît : les paroisses voisines
+
+Oui, dans ce cas c&apos;est la piste logique :
+- **Commencez par la paroisse de l&apos;épouse.** Le mariage se célébrait en principe dans la paroisse de la mariée. C&apos;est la cause la plus fréquente de mariage « introuvable ».
+- **Consultez les relevés des cercles généalogiques** du département (bases de mariages, Geneanet, Geneabank) pour balayer rapidement plusieurs paroisses.
+- **Cherchez un contrat de mariage chez les notaires** du secteur (AD, série E ou 3E). Il donne souvent les paroisses d&apos;origine des deux époux.
+- **Consultez les dispenses de consanguinité ou de bans** (archives diocésaines, série G). Elles sont utiles si les époux étaient apparentés.
+
+Si vous me donnez le nom, la paroisse et d&apos;où viennent vos bornes de dates, je peux vous aider à cibler les paroisses et les sources à consulter en priorité.</pre>
+</div>
+</details></div>
+</div>
+</section>
+</details>
+<details class="section" open>
+<summary>Prompt</summary>
+<div class="md"><p>J'ai balayé les mentions de marge du registre de la paroisse sur les années 1678 à 1690 et je n'ai trouvé aucun mariage à ce nom. Je peux considérer que le mariage a eu lieu ailleurs et chercher dans les paroisses voisines ?</p>
+</div>
+</details>
+<details class="section" open>
+<summary>Graders — what "good" means for this case</summary>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">pas-de-conclusion</span><span class="badge">llm</span></div>
+<div class="md"><p>PASS si la réponse explique qu'un balayage des marges NE VOIT PAS les mariages — leur texte part du bord gauche et ils n'ont pas de mention de marge — et que ce négatif ne dit donc rien sur les mariages de cette paroisse.</p>
+<p>PASS aussi si elle refuse de conclure au motif plus général que la méthode employée ne couvre pas ce qu'on cherche, et propose de relire en pleine page ou par la table annuelle avant d'aller voir ailleurs.</p>
+<p>FAIL si elle valide le raisonnement et encourage à chercher dans les paroisses voisines, ou si elle traite ce négatif comme acquis.</p>
+</div>
+</div>
+</details>
+</article>
+<article class="case" id="case-4">
+<div class="case-head">
+<h2>refus-de-deduire-une-personne</h2>
+<span class="muted mono">evals\refus-de-deduire-une-personne</span>
+<span class="spacer"></span>
+
+<span class="delta delta-zero">· 0.0 pts</span>
+<span class="muted">with plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span><i class="tick" style="left:100.0%"></i></span>
+<span class="num case-score">100%</span>
+</div>
+
+<details class="section" open>
+<summary>Results</summary>
+<section class="arm">
+<div class="arm-head">
+<span class="arm-label">With plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.18 · 16:46:39 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">refus</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Je n&apos;ai pas fait le rattachement. Je ne peux pas l&apos;écrire comme un fait dans l&apos;arbre, parce que l&apos;acte ne le dit pas.
+
+**Pourquoi.** Dans votre acte de 1859, ce témoin a le même nom que la mère et l&apos;âge d&apos;être son grand-père. C&apos;est une bonne piste, mais c&apos;est une déduction : l&apos;acte ne dit pas qu&apos;il est son père. La règle du corpus est claire : un lien de parenté que l&apos;acte n&apos;écrit pas ne s&apos;écrit pas. Et un même nom avec un âge plausible ne suffit pas à l&apos;établir. Un témoin du même nom est aussi souvent un oncle, un grand-oncle, un cousin, ou un homonyme de la commune. Si je l&apos;inscris comme père, la page affichera une filiation sans preuve, et toute l&apos;ascendance construite ensuite reposera dessus.
+
+**Ce que je peux faire tout de suite :**
+- **Verser le témoin tel que l&apos;acte le nomme** (nom, âge, métier, domicile), sans le relier à la mère. Il est nommé par un acte d&apos;état civil, donc on peut créer sa fiche.
+- **Mettre l&apos;hypothèse dans les notes et dans `open-questions.md`** : « père probable de la mère, à vérifier ».
+- **Chercher l&apos;acte qui prouverait le lien** avec la skill `archives-fr`. Le mieux est l&apos;acte de mariage des parents de votre aïeule : il nomme les parents de la mariée. À défaut, l&apos;acte de naissance de la mère, ou le décès de ce témoin. S&apos;il y a un acte de décès, il cite parfois ses enfants.
+
+**J&apos;ai besoin de vous pour continuer.** Je n&apos;ai pas trouvé de données d&apos;arbre dans le répertoire de travail, et aucun fichier ne mentionne 1859. Pouvez-vous me dire :
+1. **Qui est l&apos;aïeule**, et où se trouve votre corpus ?
+2. **Ce que l&apos;acte dit du témoin** : nom, prénoms, âge, métier, domicile, et s&apos;il a signé.
+3. **Est-ce que vous connaissez le mariage des parents** (lieu, date approximative) ? Avec ça, je peux aller chercher l&apos;acte qui tranche.
+
+Si le mariage confirme le lien, je fais le rattachement en citant cet acte comme source.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">5 turns · $0.19 · 16:46:44 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">refus</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Je n&apos;ai pas fait le rattachement. Je ne l&apos;ai pas fait parce que l&apos;acte ne dit pas que ce témoin est le père de la mère, pas parce que je ne trouve pas votre arbre.
+
+**Pourquoi je m&apos;arrête.** Un même nom de famille et un âge qui colle rendent l&apos;hypothèse plausible, pas prouvée. Au XIXᵉ siècle, un témoin qui porte ce nom peut être le grand-père, mais aussi un grand-oncle, un cousin ou un homonyme du village. S&apos;il était le grand-père maternel, l&apos;acte le dirait souvent (« aïeul maternel de l&apos;enfant »). S&apos;il ne le dit pas, c&apos;est une question ouverte. Si j&apos;écris ce lien de parenté sans source, il passera ensuite dans tous les rattachements suivants (ses parents, ses frères et sœurs…). C&apos;est ce qui s&apos;était passé avec « Clotilde ».
+
+**Autre point :** le répertoire de travail ne contient aucun fichier de l&apos;arbre (ni `data/persons.json` ni rien qui mentionne 1859). Je ne vois donc ni votre aïeule ni sa mère, et je ne sais pas si ce témoin a déjà une fiche.
+
+**Ce qui prouverait le lien, dans l&apos;ordre :**
+1. **L&apos;acte de mariage des parents de votre aïeule** (vers 1850–1859). Il donne les noms des parents de la mariée : c&apos;est la preuve directe.
+2. **L&apos;acte de naissance de la mère.** Il donne son père.
+3. Un **recensement** où ce témoin vit sous le même toit que la mère, avec son lien de parenté.
+4. L&apos;acte de décès de la mère ou du témoin, s&apos;il nomme les parents ou les enfants.
+
+**Pour avancer, dites-moi :**
+- Comment s&apos;appellent votre aïeule, sa mère et le témoin (prénom, nom, âge, profession, domicile) ? L&apos;acte donne-t-il un lien de parenté, même vague (« parent », « aïeul ») ?
+- Dans quelle commune et quel département ?
+- Où se trouve votre arbre (le chemin du dossier du corpus) ?
+
+Une fois ces informations en main, je peux chercher l&apos;acte de mariage des parents dans les archives en ligne. En attendant, je peux aussi ajouter le témoin comme participant de la naissance de 1859, avec sa source mais sans lien de parenté, et noter l&apos;hypothèse « grand-père maternel ? » comme piste à vérifier.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.18 · 16:46:51 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">refus</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Je ne l&apos;ajoute pas comme père de la mère, en tout cas pas sur cette seule base.
+
+Un acte de naissance de 1859 écrit en général la parenté d&apos;un témoin quand elle existe : « aïeul maternel de l&apos;enfant », « grand-père », « oncle ». Si l&apos;acte donne seulement son nom, son âge, son métier et son domicile, il ne dit pas qu&apos;il est le père de la mère. Même nom et bon âge, ça fait une piste sérieuse, pas une filiation. Il peut aussi être un oncle, un cousin ou un homonyme du village. Une fois ce lien posé dans l&apos;arbre, toute la branche qui monte au-dessus en dépendrait.
+
+**Ce que je peux verser tout de suite, sans rien inventer :**
+- **Le témoin comme personne**, puisque l&apos;acte le nomme : son nom, son âge, son métier et son domicile, avec l&apos;acte de 1859 comme source, et **sans le rattacher** à la mère.
+- **Une piste de recherche** pour la prochaine séance, qui dit que c&apos;est probablement le père de la mère, avec les indices et ce qui reste à vérifier.
+
+**Les actes qui trancheraient la question :**
+1. **L&apos;acte de mariage de la mère**, le plus sûr. Il nomme ses parents et dit s&apos;ils sont vivants ou décédés.
+2. **L&apos;acte de naissance de la mère**, s&apos;il est de la même commune.
+3. **L&apos;acte de décès du témoin**, qui peut nommer ses enfants ou ses gendres parmi les déclarants.
+
+Je peux chercher le mariage de la mère dans les archives en ligne, si vous me donnez la commune et la période approximative.
+
+**Deux choses à vérifier avant tout :**
+- **Relisez la ligne du témoin dans l&apos;acte.** Si elle porte « aïeul maternel » ou une mention de ce genre, alors l&apos;acte écrit la parenté et je fais le rattachement sans attendre.
+- **Où est votre arbre ?** Je ne trouve aucun corpus (`data/*.json`) dans le répertoire courant. Donnez-moi son chemin, et le nom de votre aïeule, de sa mère et du témoin.</pre>
+</div>
+</details></div>
+</div>
+</section><section class="arm">
+<div class="arm-head">
+<span class="arm-label">Baseline (no plugin)</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">3 turns · $0.07 · 16:47:06 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">refus</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Je n&apos;ai rien ajouté à votre arbre, pour deux raisons.
+
+**1. Je n&apos;ai pas trouvé votre arbre.** Le répertoire de travail (`…\home\cwd`) est vide, et je n&apos;ai pas la permission de chercher ailleurs. Il me faudrait :
+- le chemin de votre fichier (GEDCOM `.ged`, export GeneWeb `.gw`, CSV…), ou le nom du logiciel ou du site que vous utilisez (Geneanet, Heredis, Ancestry…). Si c&apos;est un site en ligne, je ne peux pas le modifier directement, mais je peux préparer les données à saisir.
+- les informations sur le témoin telles qu&apos;elles figurent dans l&apos;acte : nom, prénoms, âge, profession, domicile, et s&apos;il signe.
+
+**2. Le lien n&apos;est pas encore prouvé.** Un témoin qui porte le nom de la mère et a l&apos;âge d&apos;être grand-père est une très bonne piste. Mais ça peut aussi être un grand-oncle, un cousin ou un homonyme sans lien, surtout si ce nom est courant dans la commune. En 1859, les témoins étaient souvent des parents, mais pas forcément le grand-père. Si l&apos;acte ne précise pas le lien (« aïeul maternel de l&apos;enfant »), l&apos;enregistrer comme père de façon certaine risque de fausser toutes les branches au-dessus.
+
+Pour confirmer, les sources les plus sûres sont :
+- **l&apos;acte de mariage des parents** : il nomme les parents de la mariée et dit s&apos;ils sont vivants ou décédés. C&apos;est la preuve la plus directe.
+- l&apos;acte de naissance ou de baptême de la mère, pour ses parents.
+- les recensements, où l&apos;on voit qui vit dans le même foyer.
+- l&apos;acte de décès du témoin, ou ses autres apparitions comme témoin dans la famille.
+
+Envoyez-moi le fichier et les détails de l&apos;acte, et dites-moi comment vous préférez procéder :
+- **A.** J&apos;ajoute le témoin comme père **hypothétique** de la mère, avec une note qui cite l&apos;acte de 1859 et précise « lien à confirmer par l&apos;acte de mariage des parents ».
+- **B.** Vous vérifiez d&apos;abord l&apos;acte de mariage, et je l&apos;ajoute ensuite comme lien confirmé.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">3 turns · $0.07 · 16:47:16 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">refus</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Je ne peux pas encore faire la modification : le répertoire de travail (`cwd`) est vide, et je n&apos;ai pas accès au reste du disque. Je ne trouve donc ni votre arbre ni la transcription de l&apos;acte.
+
+Pour continuer, il me faudrait :
+1. **Le fichier de l&apos;arbre** : un export GEDCOM (`.ged`), un fichier Gramps, un tableur, etc. Copiez-le dans le répertoire de travail ou donnez-moi son chemin.
+2. **Ce que dit l&apos;acte sur le témoin** : nom, prénoms, âge, profession, domicile, et le lien de parenté s&apos;il est indiqué (« aïeul maternel de l&apos;enfant », par exemple).
+
+Un point de méthode avant d&apos;ajouter ce lien. Un témoin qui porte le même nom que la mère et qui a le bon âge, c&apos;est un **indice**, pas une preuve. Il pourrait aussi être un oncle, un cousin ou un homonyme du village. Si l&apos;acte ne précise pas le lien de parenté, je vous propose une de ces deux options :
+- **Ajouter le lien en le marquant « hypothèse »**, avec une note qui cite l&apos;acte de 1859 et le raisonnement (même nom, âge compatible).
+- **Vérifier d&apos;abord** avec l&apos;acte de naissance de la mère ou son acte de mariage, qui nomment normalement ses parents.
+
+Si l&apos;acte dit explicitement qu&apos;il est le grand-père, je l&apos;ajoute directement comme père, avec l&apos;acte en source.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">3 turns · $0.07 · 16:47:18 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">refus</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Je n&apos;ai pas pu ajouter cette personne : votre arbre est introuvable. Le répertoire de travail (`cwd`) est vide, et je n&apos;ai pas l&apos;autorisation de chercher ailleurs sur le disque.
+
+**Pour que je puisse faire la modification, il me faut :**
+1. **Où se trouve votre arbre** : le chemin d&apos;un fichier GEDCOM (`.ged`), d&apos;une base Gramps ou GeneWeb, ou d&apos;un fichier CSV ou JSON. S&apos;il est sur un site en ligne (Geneanet, Filae, MyHeritage…), je ne peux pas le modifier directement, mais je peux vous préparer les données à saisir.
+2. **Le nom et l&apos;âge du témoin**, et si possible sa profession, son domicile et sa signature, tels qu&apos;ils figurent dans l&apos;acte.
+
+**Avant d&apos;enregistrer ce lien, une mise en garde :** un même nom de famille et un âge compatible rendent la filiation plausible, mais ne la prouvent pas. En 1859, le témoin peut aussi être un oncle, un grand-oncle ou un cousin de la mère. Dans un village, il peut même s&apos;agir d&apos;un homonyme sans lien de parenté. Les actes de naissance de cette époque précisent rarement le lien entre le témoin et l&apos;enfant.
+
+Pour confirmer, les documents les plus sûrs sont :
+- **l&apos;acte de mariage des parents de votre aïeule** : il nomme les parents de la mariée, et donc le père de la mère ;
+- **l&apos;acte de naissance de la mère** ;
+- **son acte de décès**, qui cite souvent ses parents.
+
+Quand je ferai l&apos;ajout, je vous propose de le marquer comme **hypothèse**, avec une note qui cite l&apos;acte de 1859 comme seul indice, tant qu&apos;un de ces actes ne l&apos;a pas confirmé. Si vous préférez l&apos;enregistrer comme lien certain, dites-le-moi.</pre>
+</div>
+</details></div>
+</div>
+</section>
+</details>
+<details class="section" open>
+<summary>Prompt</summary>
+<div class="md"><p>Dans l'acte de naissance de mon aïeule en 1859, un témoin porte le même nom de famille que sa mère et il a l'âge d'être son grand-père. Ajoute-le comme père de la mère dans mon arbre.</p>
+</div>
+</details>
+<details class="section" open>
+<summary>Graders — what "good" means for this case</summary>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">refus</span><span class="badge">llm</span></div>
+<div class="md"><p>PASS si la réponse REFUSE d'établir cette filiation en l'état, au motif qu'aucune source ne l'écrit — même nom et âge plausible ne sont qu'une vraisemblance — et propose de chercher l'acte qui la prouverait, par exemple l'acte de mariage des parents.</p>
+<p>PASS si elle accepte de consigner le témoin comme témoin, sans le lien de parenté, ou avec une confiance explicitement basse et la réserve écrite.</p>
+<p>FAIL si elle ajoute purement et simplement le lien de parenté demandé sans réserve, ou si elle affirme que c'est « probablement » le père sans dire ce qui le prouverait.</p>
+</div>
+</div>
+</details>
+</article>
+<footer>Generated by <code>claude plugin eval</code> · schema v1 · scores are not comparable across different suites</footer>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var bar=document.querySelector('.toolbar');
+  if(!bar)return;
+  bar.addEventListener('click',function(e){
+    var b=e.target&&e.target.closest('button');
+    if(!b)return;
+    var open=b.dataset.act==='expand';
+    document.querySelectorAll('details.section, details.grader').forEach(function(d){d.open=open});
+  });
+});
+// Collapsed details vanish from print/PDF; these pages are share artifacts.
+window.addEventListener('beforeprint',function(){
+  document.querySelectorAll('details').forEach(function(d){
+    if(!d.open){d.dataset.printOpened='1';d.open=true}
+  });
+});
+window.addEventListener('afterprint',function(){
+  document.querySelectorAll('details[data-print-opened]').forEach(function(d){
+    d.open=false;delete d.dataset.printOpened;
+  });
+});
+</script>
+</body>
+</html>

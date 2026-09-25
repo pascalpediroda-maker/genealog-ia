@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.282",
+  "startedAt": "2026-09-25T16:54:38.502Z",
+  "durationSeconds": 9,
+  "costUsd": 0.000711,
+  "partial": false,
+  "suite": {
+    "root": "<maison>\\Documents\\genealog-ia-plugin",
+    "ablation": "none",
+    "caseFilter": "recherche-reelle-portail",
+    "threshold": 1,
+    "concurrency": 1,
+    "plugins": [
+      {
+        "name": "genealog-ia",
+        "version": "0.1.0",
+        "path": "<maison>\\Documents\\genealog-ia-plugin"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "recherche-reelle-portail",
+      "dir": "evals\\recherche-reelle-portail",
+      "source": "prose",
+      "promptMarkdown": "Quels registres d'état civil sont en ligne pour la commune d'Ambillou, en Indre-et-Loire ?\nDonne-moi la liste de ce que les archives départementales proposent pour cette commune.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "moteur-appele",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "moteurs[/\\\\](naoned|arkotheque|boscop|archinoe|gaia|anaphore|prismia)",
+            "arm": "both"
+          }
+        },
+        {
+          "name": "registres-nommes",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "PASS si la réponse donne une LISTE CONCRÈTE de registres réellement disponibles pour cette\ncommune : des intitulés avec leur type et leurs années — naissances, mariages, décès,\ntables décennales, recensements —, obtenus en interrogeant le portail.\n\nFAIL si la réponse explique seulement COMMENT chercher, renvoie vers le site des archives\nsans y être allée, dit qu'elle ne peut pas accéder au portail, ou invente des intitulés\nsans les avoir lus.",
+          "config": {
+            "criteria": "PASS si la réponse donne une LISTE CONCRÈTE de registres réellement disponibles pour cette\ncommune : des intitulés avec leur type et leurs années — naissances, mariages, décès,\ntables décennales, recensements —, obtenus en interrogeant le portail.\n\nFAIL si la réponse explique seulement COMMENT chercher, renvoie vers le site des archives\nsans y être allée, dit qu'elle ne peut pas accéder au portail, ou invente des intitulés\nsans les avoir lus.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 0,
+            "costUsd": 0.000711,
+            "judgeCostUsd": 0.000711,
+            "durationSeconds": 9,
+            "startedAt": "2026-09-25T16:54:38.567Z",
+            "error": "exit 1: A shell tool (Bash or PowerShell) was granted but this machine cannot confine it (no sandbox backend on this platform, or it is not installed), so the run was refused rather than run unconfined — drop the shell grant, or on Linux/macOS install the backend. Sandbox required but unavailable: sandbox is enabled but the Windows sandbox is not active on this session (feature gate off). · stderr:  Error: sandbox required but unavailable: sandbox is enabled but the Windows sandbox is not active on this session (feature gate off)   sandbox.failIfUnavailable is set — refusing to start without a working sandbox. ",
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-Tqhy9t\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "moteur-appele",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Bash called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "registres-nommes",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": ""
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 0,
+    "overallScore": 0,
+    "overallPassRate": 0
+  }
+}

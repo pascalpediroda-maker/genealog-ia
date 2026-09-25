@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.282",
+  "startedAt": "2026-09-25T16:53:01.845Z",
+  "durationSeconds": 29,
+  "costUsd": 0.30246219999999996,
+  "partial": false,
+  "suite": {
+    "root": "<maison>\\Documents\\genealog-ia-plugin",
+    "ablation": "none",
+    "caseFilter": "recherche-reelle-portail",
+    "threshold": 1,
+    "concurrency": 1,
+    "plugins": [
+      {
+        "name": "genealog-ia",
+        "version": "0.1.0",
+        "path": "<maison>\\Documents\\genealog-ia-plugin"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "recherche-reelle-portail",
+      "dir": "evals\\recherche-reelle-portail",
+      "source": "prose",
+      "promptMarkdown": "Quels registres d'état civil sont en ligne pour la commune d'Ambillou, en Indre-et-Loire ?\nDonne-moi la liste de ce que les archives départementales proposent pour cette commune.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "moteur-appele",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Bash",
+            "input_match": "moteurs[/\\\\](naoned|arkotheque|boscop|archinoe|gaia|anaphore|prismia)",
+            "arm": "both"
+          }
+        },
+        {
+          "name": "registres-nommes",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "PASS si la réponse donne une LISTE CONCRÈTE de registres réellement disponibles pour cette\ncommune : des intitulés avec leur type et leurs années — naissances, mariages, décès,\ntables décennales, recensements —, obtenus en interrogeant le portail.\n\nFAIL si la réponse explique seulement COMMENT chercher, renvoie vers le site des archives\nsans y être allée, dit qu'elle ne peut pas accéder au portail, ou invente des intitulés\nsans les avoir lus.",
+          "config": {
+            "criteria": "PASS si la réponse donne une LISTE CONCRÈTE de registres réellement disponibles pour cette\ncommune : des intitulés avec leur type et leurs années — naissances, mariages, décès,\ntables décennales, recensements —, obtenus en interrogeant le portail.\n\nFAIL si la réponse explique seulement COMMENT chercher, renvoie vers le site des archives\nsans y être allée, dit qu'elle ne peut pas accéder au portail, ou invente des intitulés\nsans les avoir lus.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 5,
+            "costUsd": 0.30246219999999996,
+            "judgeCostUsd": 0.002469,
+            "durationSeconds": 29,
+            "startedAt": "2026-09-25T16:53:01.897Z",
+            "error": null,
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-ZNXVNN\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "moteur-appele",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Bash called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "registres-nommes",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Je n'ai pas pu obtenir cette liste. Pour la dresser, il faut interroger le portail des Archives départementales d'Indre-et-Loire, et mes outils ont été refusés : la lecture du fichier qui décrit ce portail (`references/portails.md`) et la recherche dedans ont été bloquées par le mode d'autorisation actuel (« don't ask »). Je n'ai pas non plus d'accès au web ni au terminal pour lancer les scripts d'interrogation.\n\nJe ne vais donc pas vous donner de liste de mémoire. Je risquerais d'inventer des cotes ou des années, et un registre imaginaire est exactement ce qu'il faut éviter en généalogie.\n\nCe que la méthode du plugin indique déjà pour ce département :\n- **Le portail de l'AD37 fournit son inventaire complet** par un protocole standard (OAI-PMH). On peut donc obtenir la liste exacte des registres d'une commune, avec leurs dates, sans naviguer à la main sur le site.\n- **Le portail n'accepte le nom de commune que dans sa forme exacte**, du type « Ambillou (Indre-et-Loire, France) ». Il faut lire ce libellé sur le portail, pas le deviner. Si une recherche ne rend rien, c'est presque toujours la graphie qui est en cause, pas l'absence de registres.\n\nPour continuer, deux possibilités :\n1. **Vous m'accordez les droits nécessaires** (lecture des fichiers du plugin, et terminal ou accès web). Je lance alors l'interrogation de l'AD37, je filtre sur Ambillou et je vérifie que le nombre obtenu diffère du total du département, ce qui prouve que le filtre a bien fonctionné. Vous aurez ensuite la liste par type d'acte (baptêmes, mariages, sépultures, naissances, mariages, décès, tables décennales) avec les années couvertes.\n2. **Vous consultez vous-même le site** des Archives d'Indre-et-Loire, rubrique état civil, en cherchant la commune Ambillou. Pensez à afficher tous les registres de la commune sans filtre par type d'acte : certaines tables décennales n'ont pas de type et disparaissent quand on filtre."
+              }
+            ]
+          }
+        ]
+      },
+      "advisories": [
+        "grader \"moteur-appele\" cannot pass with the granted tools: it needs a Bash call in the trace, but Bash is not granted, so the run withholds it from the model and no call (not even a refused one) can occur — add Bash to the case's allowed_tools and grant it with --allow-tools Bash"
+      ],
+      "aggregates": {
+        "score": 0,
+        "passRate": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 0,
+    "overallScore": 0,
+    "overallPassRate": 0
+  }
+}

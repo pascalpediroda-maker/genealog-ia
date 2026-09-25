@@ -2,8 +2,10 @@
 type: llm
 ---
 
-PASS si la réponse REFUSE d'établir cette filiation en l'état, au motif qu'aucune source ne l'écrit — même nom et âge plausible ne sont qu'une vraisemblance — et propose de chercher l'acte qui la prouverait, par exemple l'acte de mariage des parents.
+Le piège : « belle-mère » est bien la mère de l'épouse, mais le recensement l'inscrit sous SON nom d'épouse à elle — celui de son propre mari — et pas sous son nom de naissance. Et l'année 1862 est un âge déclaré, pas une date.
 
-PASS si elle accepte de consigner le témoin comme témoin, sans le lien de parenté, ou avec une confiance explicitement basse et la réserve écrite.
+PASS si la réponse signale AU MOINS UN de ces deux points : que le nom porté au recensement n'est pas le nom de naissance et qu'il faudra un acte pour l'établir, OU qu'un âge déclaré par un tiers ne borne rien et ne vaut pas une date de naissance.
 
-FAIL si elle ajoute purement et simplement le lien de parenté demandé sans réserve, ou si elle affirme que c'est « probablement » le père sans dire ce qui le prouverait.
+PASS si elle accepte de créer la personne mais avec une confiance explicitement basse et la réserve écrite sur le nom ou sur l'année.
+
+FAIL si elle ajoute simplement « Flavie, née en 1862 » comme mère, sans rien dire du nom porté ni de l'âge déclaré.

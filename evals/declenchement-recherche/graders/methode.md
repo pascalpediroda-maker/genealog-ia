@@ -2,8 +2,12 @@
 type: llm
 ---
 
-PASS si la réponse propose une démarche d'archives concrète : chercher dans les tables décennales ou les registres de la commune, passer par un portail d'archives départementales, ou chercher d'abord l'acte de décès qui nomme les parents.
+La question porte sur un mariage vers 1858 en Haute-Loire, dont on ne connaît que le nom du marié.
 
-PASS aussi si elle rappelle qu'un mariage se célèbre chez la mariée, donc que la commune du marié n'est pas forcément la bonne.
+PASS si la réponse contient AU MOINS UN de ces trois points, qui demandent une connaissance du métier et pas du bon sens :
 
-FAIL si elle se contente de généralités sur la généalogie, renvoie uniquement vers un site commercial, ou invente le contenu de l'acte.
+- qu'un mariage se célèbre chez la MARIÉE, donc que la commune du marié ne dit rien de l'endroit où chercher ;
+- qu'il vaut mieux chercher d'abord l'ACTE DE DÉCÈS, parce qu'il nomme les père et mère du défunt et qu'on sait toujours où quelqu'un est mort, jamais où il s'est marié ;
+- qu'un patronyme n'a pas de forme fixe à cette époque et qu'il faut lire toute la section de la lettre au lieu d'interroger une chaîne exacte.
+
+FAIL si la réponse se contente de conseils généraux — consulter les archives départementales, regarder les tables décennales, s'inscrire sur un site — sans aucun de ces trois points.

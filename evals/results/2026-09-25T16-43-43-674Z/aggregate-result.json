@@ -1,0 +1,904 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.282",
+  "startedAt": "2026-09-25T16:43:43.674Z",
+  "durationSeconds": 240,
+  "costUsd": 3.614339,
+  "partial": false,
+  "suite": {
+    "root": "<maison>\\Documents\\genealog-ia-plugin",
+    "ablation": "with-without",
+    "threshold": 1,
+    "concurrency": 3,
+    "plugins": [
+      {
+        "name": "genealog-ia",
+        "version": "0.1.0",
+        "path": "<maison>\\Documents\\genealog-ia-plugin"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "declenchement-ouvrir-son-arbre",
+      "dir": "evals\\declenchement-ouvrir-son-arbre",
+      "source": "prose",
+      "promptMarkdown": "Je voudrais commencer l'arbre généalogique de ma famille. J'ai une vieille photo d'un arbre dessiné à la main par ma grand-mère, et ce qu'elle m'a raconté. Par où on commence ?",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "demarrage",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "PASS si la réponse propose de partir de ce que la personne a déjà — lire la photo de l'arbre au bon grossissement, recueillir le récit de la grand-mère — et de poser les questions à celle-ci pendant qu'elle est là.\n\nFAIL si la réponse suppose qu'il s'agit de l'arbre de quelqu'un d'autre que la personne qui demande, ou si elle commence par proposer un site commercial ou un logiciel à acheter.",
+          "config": {
+            "criteria": "PASS si la réponse propose de partir de ce que la personne a déjà — lire la photo de l'arbre au bon grossissement, recueillir le récit de la grand-mère — et de poser les questions à celle-ci pendant qu'elle est là.\n\nFAIL si la réponse suppose qu'il s'agit de l'arbre de quelqu'un d'autre que la personne qui demande, ou si elle commence par proposer un site commercial ou un logiciel à acheter.",
+            "focus": "last_message"
+          }
+        },
+        {
+          "name": "skill-declenchee",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?nouveau-corpus\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.1517792,
+            "judgeCostUsd": 0.0030150000000000003,
+            "durationSeconds": 43,
+            "startedAt": "2026-09-25T16:43:43.756Z",
+            "error": null,
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-AzL4Cr\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "demarrage",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Avec plaisir. On commence par ce que vous avez déjà, avant d'écrire la moindre fiche.\n\n## 1. La photo de l'arbre de votre grand-mère\n\nEnvoyez-moi **le fichier d'origine**, en pleine résolution : l'original du téléphone ou le scan, pas une capture d'écran ni une photo recompressée par une messagerie. Une écriture à la main se déchiffre de près, en comparant ses lettres entre elles. Par exemple, on reconnaît un « 9 » douteux en le comparant aux autres 9 de la page.\n\nJe lirai la photo par zones, en l'agrandissant. Ce que je ne peux pas lire avec certitude sera noté **[non lu]** ou marqué comme douteux. Je ne complète jamais un blanc par ce qui semble plausible. Je vous poserai ces questions directement.\n\n## 2. Ce que votre grand-mère vous a raconté\n\nÉcrivez-le comme ça vient, sans mettre en forme : des noms, des prénoms, des villages, des métiers, « il est mort à la guerre », « ils se sont mariés à… ». Chaque souvenir sera enregistré comme **un témoignage** : une vraie source, mais qu'il faudra confirmer par un acte d'état civil.\n\n## 3. Ensuite, de mon côté\n\n- **Vérifier dans le fichier des décès de l'INSEE.** Pour toute personne morte en France depuis 1970, il donne gratuitement la date et le lieu de naissance exacts, et l'orthographe officielle du nom. C'est la vérification la plus rentable, et je la fais avant d'écrire quoi que ce soit.\n- **Créer les fiches** : personnes, unions, événements et lieux, avec un niveau de confiance prudent. Aucun lien de parenté ne sera ajouté s'il n'a pas été dit ou écrit.\n- **Vous donner trois listes** : les actes à demander, et à quelle mairie ; les questions à poser à la famille ; les archives à consulter.\n\n## Trois questions pour bien démarrer\n\n1. **Votre grand-mère est-elle encore là pour qu'on lui pose des questions ?** Si c'est le cas, c'est de loin la meilleure source. Mieux vaut lui demander vite ce qu'on n'arrive pas à lire.\n2. **Qui est le point de départ de l'arbre ?** Vous-même, ou quelqu'un d'autre, par exemple vos enfants ?\n3. **Votre adresse e-mail porte le nom PEDIRODA.** S'agit-il de la famille PAIRÉ / PEDIRODA déjà enregistrée dans ce projet, qu'on compléterait avec cette photo ? Ou d'une autre branche, à traiter comme un arbre séparé ?\n\nEnvoyez la photo quand vous voulez. Ce qu'elle raconte me permettra de préparer mes questions pour vous et votre famille."
+              },
+              {
+                "name": "skill-declenchee",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.1477056,
+            "judgeCostUsd": 0.0030239999999999998,
+            "durationSeconds": 36,
+            "startedAt": "2026-09-25T16:43:43.756Z",
+            "error": null,
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-C2UcMx\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "demarrage",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Bonne nouvelle : on part d'une bonne base. Un arbre dessiné par une grand-mère et ses souvenirs, c'est souvent ce qu'il y a de plus précieux au départ. Voici comment on va procéder.\n\n## Les étapes\n\n**1. Lire la photo de l'arbre.** Envoyez-moi le fichier d'origine (photo ou PDF), pas une capture réduite. Je le lirai zone par zone, en grand. Pour déchiffrer une écriture, on compare ses lettres entre elles : on regarde par exemple comment elle forme ses 9 ou ses majuscules ailleurs sur la feuille. Ce que je ne peux pas lire avec certitude sera marqué **[non lu]**. Je ne remplirai jamais un blanc avec une supposition plausible.\n\n**2. Vous poser les questions tout de suite.** Vous êtes là et vous pouvez répondre, c'est un gros avantage. Quand un prénom est ambigu, qu'un lien de parenté n'est pas clair ou qu'un nom de commune est douteux, je vous le demanderai au fur et à mesure.\n\n**3. Vérifier dans le fichier des décès de l'INSEE avant d'écrire.** Ce fichier public recense toute personne morte en France depuis 1970, avec sa date et son lieu de naissance exacts. Il permet souvent de corriger une orthographe ou une date. Attention : il ne connaît les femmes mariées que sous leur **nom de jeune fille**.\n\n**4. Enregistrer l'arbre.** J'enregistre les personnes, les couples et les événements. Chaque information est notée avec son degré de fiabilité : un souvenir de famille reste « probable » tant qu'aucun acte ne le confirme. Un lien que personne n'a dit explicitement n'est pas ajouté, même s'il semble évident.\n\n**5. Créer une page à consulter.** Une page web présente votre arbre, et j'y joins la liste des actes d'état civil à demander aux mairies.\n\n## Ce qu'il me faut pour commencer\n\n1. **La photo de l'arbre**, en indiquant où elle se trouve sur votre ordinateur, ou en la glissant ici.\n2. **Ce que votre grand-mère vous a raconté**, en vrac : noms, lieux, métiers, anecdotes. Il n'est pas nécessaire de trier.\n3. **Deux précisions :**\n   - Votre adresse e-mail laisse penser que vous êtes l'auteur du plugin. Or l'outil que j'utilise contient déjà un arbre **PAIRÉ / PEDIRODA**. S'agit-il de la même famille ? Si oui, on complète cet arbre plutôt que d'en créer un deuxième.\n   - Sinon, quel est le nom de famille principal, et pour qui fait-on l'arbre (vous-même, un proche) ?\n\nCommencez par la photo : c'est elle qui va guider tout le reste."
+              },
+              {
+                "name": "skill-declenchee",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.149573,
+            "judgeCostUsd": 0.003939,
+            "durationSeconds": 39,
+            "startedAt": "2026-09-25T16:43:43.757Z",
+            "error": null,
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-H26tDh\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "demarrage",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Bonne idée de partir de ces deux sources : l'arbre de votre grand-mère et ce qu'elle vous a raconté sont souvent ce qu'on a de plus précieux au départ. Je vous propose cet ordre.\n\n**1. Lire la photo en détail**\nEnvoyez-moi la photo, en fichier et à pleine résolution si possible, pas une miniature. Je la lirai zone par zone, en comparant son écriture avec elle-même : c'est comme ça qu'on distingue un 9 d'un 5 ou qu'on déchiffre un nom de commune. Tout ce que je ne peux pas lire avec certitude sera noté **[non lu]**, sans deviner.\n\n**2. Noter ce qu'elle vous a raconté**\nÉcrivez-le comme ça vous vient : noms, surnoms, villages, métiers, dates approximatives, anecdotes. Pas besoin de mettre en forme. Je vous poserai ensuite des questions précises sur les points ambigus : un prénom sans nom de famille, un lien de parenté incertain, un lieu qui porte le même nom qu'un autre.\n\n**3. Vérifier avant d'écrire**\nPour toute personne morte en France depuis 1970, le fichier des décès de l'INSEE donne la date et le lieu de naissance exacts, avec la bonne orthographe du nom. C'est gratuit et on le consulte avant de saisir quoi que ce soit, pour ne pas écrire deux fois. Seule limite : il ne connaît les femmes mariées que sous leur nom de naissance.\n\n**4. Saisir l'arbre avec prudence**\n- Un souvenir de famille est noté « probable », pas « certain », tant qu'aucun acte ne le confirme.\n- On n'ajoute pas un lien de parenté que personne n'a affirmé, même s'il paraît évident.\n- Les personnes vivantes sont marquées comme telles, pour les protéger à la publication.\n\n**5. Préparer la suite**\nÀ la fin, vous aurez trois listes : les actes à demander aux mairies (un acte de décès se demande sans justificatif et donne le nom des parents), les questions à poser à la famille, et les archives à consulter en ligne.\n\n**Deux questions avant de commencer :**\n1. Le dossier de travail actuel est vide. Voulez-vous créer l'arbre ici, ou avez-vous déjà un dépôt avec un dossier `data/` et des scripts de généalogie (un arbre PAIRÉ / PEDIRODA, par exemple) ? Dans ce cas, donnez-moi son chemin pour qu'on y travaille directement.\n2. Pour qui fait-on cet arbre, vous ou vos enfants ? Autrement dit, à partir de qui dit-on « son grand-père », « sa tante » ?\n\nEnsuite, envoyez-moi la photo et on commence la lecture."
+              },
+              {
+                "name": "skill-declenchee",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.0612996,
+            "judgeCostUsd": 0.0024420000000000015,
+            "durationSeconds": 24,
+            "startedAt": "2026-09-25T16:44:19.919Z",
+            "error": null,
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-zh5ZCL\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "demarrage",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Belle idée. La photo de votre grand-mère et ses récits sont une très bonne base. Je vous propose de commencer comme ça :\n\n## 1. Tout noter tel quel, avant de trier\n- **La photo** : si vous me donnez le chemin du fichier (par exemple `<maison>\\Pictures\\arbre.jpg`), je peux la lire et transcrire chaque nom, date et lien. Vous vérifierez ensuite ce que j'aurai lu, parce que l'écriture manuscrite ancienne est parfois difficile à déchiffrer.\n- **Les récits** : notez tout ce dont vous vous souvenez, même les détails vagues comme « un oncle parti en Algérie » ou « la famille venait d'un village près de Lyon ». Ces indices sont souvent précieux par la suite.\n\n## 2. Structurer les informations\nPour chaque personne, on note :\n- nom (et **nom de jeune fille** pour les femmes), prénoms\n- dates et lieux de naissance, de mariage et de décès\n- parents, conjoint(s), enfants\n- **la source** : « arbre de grand-mère », « souvenir oral » ou « acte d'état civil ». C'est l'habitude la plus importante à prendre dès le début.\n\nJe peux vous créer un fichier simple (tableau ou texte) dans votre dossier, ou directement un fichier **GEDCOM**. C'est le format standard, que vous pourrez ensuite importer dans Geneanet, Heredis, Gramps (gratuit), etc.\n\n## 3. Vérifier et remonter plus loin\nEnsuite, on confirme les informations avec des documents officiels :\n- **Livret de famille** et papiers de famille\n- **Archives départementales en ligne** : les registres d'état civil et paroissiaux y sont souvent numérisés et consultables gratuitement.\n- **Geneanet** : d'autres personnes ont peut-être déjà fait des recherches sur les mêmes branches.\n\n---\n\n**Pour commencer**, envoyez-moi le chemin de la photo, ou racontez-moi ce que vous savez déjà. Par qui voulez-vous commencer : vous-même en remontant vers le passé, ou directement la génération de votre grand-mère ?"
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.061536600000000004,
+            "judgeCostUsd": 0.002583000000000002,
+            "durationSeconds": 26,
+            "startedAt": "2026-09-25T16:44:22.729Z",
+            "error": null,
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-vx2MeR\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "demarrage",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Belle idée. Le plus important au début, c'est de ne rien perdre de ce que vous avez déjà, et de bien séparer ce qui est **prouvé** de ce qui est **raconté**.\n\n## 1. Mettre la photo à l'abri\n- Numérisez-la en bonne résolution (scanner ou photo nette, bien éclairée, sans reflet), et gardez l'original à l'abri de la lumière.\n- **Vous pouvez déposer l'image dans ce dossier** (`<maison>\\...\\cwd`). Je peux la lire et **retranscrire l'arbre** : noms, dates, liens. Je vous signalerai les passages difficiles à déchiffrer au lieu de deviner.\n\n## 2. Noter les souvenirs de votre grand-mère\nÉcrivez tout ce dont vous vous souvenez, même les détails qui paraissent anodins : surnoms, métiers, villages, guerres, déménagements, « on disait que… ». Si vous pouvez encore lui parler, ou parler à d'autres anciens de la famille, faites-le vite, et enregistrez si possible.\nPour chaque information, indiquez sa **source** : « arbre de mamie », « récit oral », « acte de naissance »…\n\n## 3. Choisir un outil\n- **Logiciel ou site gratuit** : Geneanet (très bien pour la France), Gramps (logiciel libre, hors ligne), FamilySearch.\n- **Ou un fichier simple ici** : je peux vous monter un fichier structuré (tableur ou format **GEDCOM**, le standard qu'on peut importer ensuite dans n'importe quel logiciel), puis générer un visuel de l'arbre.\n\n## 4. Vérifier avec les archives (plus tard)\nEn France, l'état civil ancien est souvent **numérisé gratuitement** sur les sites des Archives départementales : naissances, mariages, décès, et avant 1792 les registres paroissiaux. On part de vous et on remonte génération par génération. L'arbre de votre grand-mère servira de fil conducteur.\n\n---\n\n**Pour commencer concrètement :** déposez la photo dans le dossier et dites-moi son nom de fichier. Je la retranscris, puis on complète ensemble avec ce qu'elle vous a raconté. Vous préférez un tableur, un fichier GEDCOM, ou les deux ?"
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.061368599999999995,
+            "judgeCostUsd": 0.002546999999999997,
+            "durationSeconds": 26,
+            "startedAt": "2026-09-25T16:44:26.474Z",
+            "error": null,
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-toperF\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "demarrage",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Bonne idée : l'arbre de votre grand-mère et ses récits sont une excellente base. Voici comment je propose de procéder.\n\n## 1. Transcrire la photo de l'arbre\nDéposez la photo dans ce dossier (par exemple `arbre_grand-mere.jpg`) et donnez-m'en le nom. Je peux lire les images, donc je transcrirai chaque personne avec ce qui est indiqué : noms, prénoms, dates, lieux et liens de parenté.\n- Je signalerai les passages illisibles ou ambigus au lieu de deviner. Vous pourrez trancher, ou demander à quelqu'un de la famille.\n- Si la photo est floue ou penchée, une photo plus nette ou plusieurs gros plans aideront beaucoup.\n\n## 2. Noter ce qu'elle vous a raconté\nÉcrivez ses récits comme ils vous viennent, même en vrac : « l'oncle Marcel est parti en Algérie », « la famille venait d'un village près de Rodez »… Je les rattacherai aux bonnes personnes. Il est important de **distinguer la source** de chaque information : l'arbre dessiné, un souvenir oral ou un document officiel. Cela vous servira plus tard pour les vérifications.\n\n## 3. Choisir un format\nJe vous suggère deux fichiers :\n- **Un fichier lisible**, en Markdown ou en tableur, avec une fiche par personne. Il est facile à lire et à corriger.\n- **Un fichier GEDCOM** (`.ged`). C'est le format standard de la généalogie : il s'importe dans Geneanet, Heredis, Gramps (gratuit) ou Ancestry, qui dessinent l'arbre pour vous.\n\nSi vous préférez, je peux aussi générer un schéma visuel de l'arbre.\n\n## 4. Vérifier et compléter\nUne fois la base posée, je vous indiquerai où chercher pour confirmer ou prolonger l'arbre :\n- les archives départementales en ligne (état civil, registres paroissiaux) ;\n- les fiches matricules militaires ;\n- Mémoire des Hommes ;\n- les tables décennales.\n\n---\n\n**Pour commencer :** envoyez-moi la photo, ou décrivez-moi la première personne dont vous êtes sûr (par exemple vous-même ou vos parents). Ensuite, on remonte génération par génération."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 1,
+        "passRateWithout": 1,
+        "delta": 0
+      }
+    },
+    {
+      "name": "declenchement-recherche",
+      "dir": "evals\\declenchement-recherche",
+      "source": "prose",
+      "promptMarkdown": "Mon arrière-grand-père s'est marié vers 1858 quelque part en Haute-Loire, je n'ai que son nom et une date approximative. Comment je m'y prends pour retrouver son acte de mariage ?",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "methode",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "PASS si la réponse propose une démarche d'archives concrète : chercher dans les tables décennales ou les registres de la commune, passer par un portail d'archives départementales, ou chercher d'abord l'acte de décès qui nomme les parents.\n\nPASS aussi si elle rappelle qu'un mariage se célèbre chez la mariée, donc que la commune du marié n'est pas forcément la bonne.\n\nFAIL si elle se contente de généralités sur la généalogie, renvoie uniquement vers un site commercial, ou invente le contenu de l'acte.",
+          "config": {
+            "criteria": "PASS si la réponse propose une démarche d'archives concrète : chercher dans les tables décennales ou les registres de la commune, passer par un portail d'archives départementales, ou chercher d'abord l'acte de décès qui nomme les parents.\n\nPASS aussi si elle rappelle qu'un mariage se célèbre chez la mariée, donc que la commune du marié n'est pas forcément la bonne.\n\nFAIL si elle se contente de généralités sur la généalogie, renvoie uniquement vers un site commercial, ou invente le contenu de l'acte.",
+            "focus": "last_message"
+          }
+        },
+        {
+          "name": "skill-declenchee",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?archives-fr\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.30391339999999994,
+            "judgeCostUsd": 0.0036270000000000052,
+            "durationSeconds": 33,
+            "startedAt": "2026-09-25T16:44:44.337Z",
+            "error": null,
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-8SfE3e\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "methode",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Avec un nom et « vers 1858 en Haute-Loire », le plus dur est de trouver **la commune**. L'état civil est classé commune par commune, et la Haute-Loire en compte environ 260. Une fois la commune connue, l'acte se trouve en quelques minutes.\n\n## 1. Trouver la commune, en partant de ce que vous savez déjà\n- **L'acte de naissance d'un de ses enfants**, idéalement l'aîné, né vers 1859-1860. Il donne la commune où vivait le couple, souvent celle du mariage ou une commune voisine.\n- **L'acte de décès de l'arrière-grand-père ou de sa femme**, qui porte souvent le nom du conjoint et le lieu de naissance.\n- **La fiche matricule d'un fils né après 1867.** Elle donne la commune de naissance et les deux parents. C'est gratuit et en ligne sur le site des Archives de la Haute-Loire.\n- **Les papiers de famille** : livret de famille, faire-part, contrat de mariage, qui cite le notaire et donc le canton.\n\n## 2. Chercher dans les index, sans filtres\n- **Les relevés du Cercle généalogique de la Haute-Loire** : une grande partie des mariages du département y est dépouillée.\n- **Geneanet, Filae et FamilySearch** : cherchez le nom sur toute la Haute-Loire, avec une fourchette large, par exemple 1850-1866.\n- Essayez plusieurs graphies. Au XIXᵉ siècle, un même nom peut s'écrire de plusieurs façons.\n- Ne resserrez pas trop les filtres. Ces index sont incomplets, donc « aucun résultat » ne prouve pas que l'acte n'existe pas. Ça veut seulement dire qu'il n'a pas encore été relevé.\n\n## 3. Aller dans les registres\nSur le site des **Archives départementales de la Haute-Loire**, rubrique état civil, en consultation gratuite :\n- Commencez par les **tables décennales 1853-1862** de la commune. Chaque table couvre dix ans et range les mariages par ordre alphabétique. Vous aurez la date exacte en une ou deux vues. Si rien n'apparaît, regardez aussi la table 1863-1872.\n- Pensez à la **commune de la mariée** : un mariage se célèbre en principe chez elle, pas chez le marié. Si vous ne trouvez rien dans sa commune à lui, cherchez dans les communes voisines.\n- Ensuite, ouvrez le registre des mariages de l'année indiquée et lisez l'acte.\n\n## 4. Ce que l'acte vous donnera\nUn acte de mariage de cette époque indique en général les dates et lieux de naissance des deux époux, leurs parents (avec leur profession, et s'ils sont vivants ou décédés), et parfois les grands-parents décédés. Il vous fait donc remonter d'une génération, souvent de deux.\n\n## Deux précautions\n- **La consultation en ligne et la délivrance d'une copie en mairie sont gratuites.** Méfiez-vous des sites qui demandent 30 à 40 € pour « commander un acte » : ce ne sont pas l'administration.\n- Notez aussi vos recherches sans résultat, par exemple : « table décennale 1853-1862 de X, aucun DUPONT ». Ça évite de refaire la même recherche plus tard.\n\nSi vous me donnez le nom et ce que vous savez d'autre (enfants, métier, lieu de décès, région de la Haute-Loire), je peux vous aider à choisir par où commencer."
+              },
+              {
+                "name": "skill-declenchee",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.3185382,
+            "judgeCostUsd": 0.006643,
+            "durationSeconds": 39,
+            "startedAt": "2026-09-25T16:44:48.449Z",
+            "error": null,
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-mfYpKY\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "methode",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Sans la commune, le vrai travail est de la retrouver. Une fois qu'on l'a, trouver l'acte prend à peu près dix minutes. Voici la démarche, dans l'ordre.\n\n## 1. Trouver la commune avec les documents de la génération suivante\n\nUn acte de mariage de 1858 est rarement la première pièce qu'on trouve. On y arrive en remontant depuis les enfants :\n\n- **Actes de naissance des enfants** (à partir de 1859 environ) : ils nomment le père, la mère avec son nom de jeune fille, et souvent leur domicile.\n- **Mariage d'un enfant**, par exemple votre arrière-grand-parent direct : il nomme les parents des deux époux, dit s'ils sont vivants et où ils habitent.\n- **Acte de décès** de votre arrière-grand-père : il nomme en général son épouse.\n- **Fiche matricule** d'un fils né entre 1867 et 1880 environ : elle donne sur une seule page la commune de naissance et le domicile des parents. Elle est en ligne aux Archives départementales de la Haute-Loire.\n- **Papiers de famille** : un livret de famille, un faire-part, ou ce dont se souvient un aîné.\n\n⚠\ufe0f **Un mariage se célèbre en général dans la commune de la mariée.** Si vous savez où il vivait, ce n'est pas forcément là qu'il s'est marié. Il faut chercher aussi du côté de l'épouse.\n\n## 2. Chercher d'abord dans les index, en ratissant large\n\n- **Geneanet**, **FamilySearch**, et les **relevés du cercle généalogique de la Haute-Loire**, qui a dépouillé beaucoup de mariages du département.\n- Cherchez **large** : le nom seul, 1850 à 1865, sans filtre de commune. Essayez aussi les **variantes d'orthographe**, parce qu'un nom pouvait s'écrire de 3 ou 4 façons à l'époque.\n- Un index ne contient que ce que des bénévoles ont saisi. **Zéro résultat ne prouve donc rien.** Un résultat, en revanche, vous donne la commune.\n\n## 3. Une fois la commune connue, aller dans les registres en ligne\n\nSur le site des Archives départementales de la Haute-Loire (état civil numérisé, consultation gratuite) :\n\n1. Ouvrez d'abord la **table décennale 1853-1862** de la commune. C'est un index alphabétique des mariages sur dix ans, qui donne la date exacte.\n2. Ouvrez ensuite le **registre des mariages** de l'année indiquée, puis l'acte à sa date.\n3. S'il n'y a pas de table décennale, chaque année se termine par une **table annuelle** : consultez-la avant de feuilleter tout le registre.\n4. Si un mot est illisible, cherchez le **second exemplaire** du registre. Il en existe souvent deux versions, l'une gardée par la commune et l'autre par le tribunal. Deux copies écrites par deux mains différentes vous donnent deux chances de lire le mot.\n\nSi vous n'avez qu'une idée vague de la région, vous pouvez aussi parcourir les tables décennales des communes d'un canton, une par une. C'est long, mais faisable.\n\n## 4. En plus\n\n- **Le contrat de mariage chez le notaire**, s'il y en a eu un. Il est cité dans l'acte de mariage et se trouve aux Archives départementales. Il nomme parfois les grands-parents.\n- **L'acte de mariage vous ouvre la génération précédente** : il nomme les parents des deux époux et renvoie à leur acte de naissance.\n\n## Pour obtenir une copie\n\n- La consultation en ligne est **gratuite**, et une capture d'écran suffit pour votre recherche.\n- Pour une copie officielle, un **descendant direct** peut la demander **gratuitement** sur service-public.gouv.fr.\n- **Méfiez-vous des sites qui font payer** un acte d'état civil (par exemple annuaire-mairie.fr ou demarches.fr) : ce ne sont pas l'administration.\n\n---\n\nSi vous me donnez **son nom et son prénom**, ce que vous savez de **son épouse** et le nom d'**un de ses enfants**, avec un lieu, même approximatif, je peux vous aider à choisir par où commencer."
+              },
+              {
+                "name": "skill-declenchee",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.30923280000000003,
+            "judgeCostUsd": 0.004955999999999999,
+            "durationSeconds": 33,
+            "startedAt": "2026-09-25T16:44:52.689Z",
+            "error": null,
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-lkPFOH\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "methode",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Le mariage vers 1858 est dans l'état civil. Les registres de la Haute-Loire de cette époque sont numérisés et consultables gratuitement sur le site des Archives départementales (archives43.fr, rubrique état civil). Le problème, c'est que ces registres sont classés **par commune**, pas par nom. Il faut donc d'abord trouver la commune.\n\n## 1. Trouver la commune\n\n- **Les index en ligne, avec une recherche large.** Geneanet, FamilySearch, Filae et les relevés du Cercle généalogique de la Haute-Loire. Tapez le nom seul, sans filtre sur la date ni le lieu, et triez vous-même les résultats. Ces index ne couvrent qu'une partie des registres : s'ils ne trouvent rien, ça ne prouve pas que l'acte n'existe pas.\n- **Les papiers de famille.** Un livret de famille, un faire-part, un acte de décès, et surtout l'acte de naissance d'un de ses enfants, qui donne la commune où vivait le couple.\n- **La fiche matricule d'un de ses fils**, si l'un d'eux est né après 1867. Elle donne la commune de naissance et les noms des deux parents. Elle se trouve aussi sur le site des Archives départementales, dans les registres matricules.\n- **Attention : on se marie en général dans la commune de la mariée.** Le mariage peut donc avoir eu lieu dans un autre village que celui où il vivait. Cherchez aussi dans les communes voisines.\n\n## 2. Chercher dans les tables décennales\n\nPour chaque commune possible, ouvrez la **table décennale 1853-1862**. C'est un index alphabétique des mariages sur dix ans, et votre date approximative y tombe. Lisez toute la liste de la lettre de son nom : l'orthographe variait beaucoup (Peyret, Payret, Perret…). Si rien ne sort, prenez aussi 1843-1852 et 1863-1872.\n\n## 3. Lire l'acte\n\nLa table donne la date exacte. Allez ensuite dans le registre des mariages de cette année-là. À la fin de chaque année, il y a aussi une table annuelle qui permet de vérifier. Un acte de mariage est très riche : il donne l'âge et le lieu de naissance des deux époux, et les noms des quatre parents, en précisant s'ils sont vivants. C'est le meilleur point de départ pour remonter d'une génération.\n\n**Si un mot est illisible**, les registres existent souvent en deux exemplaires : celui de la mairie et celui du greffe. Le second est parfois numérisé, et une autre écriture règle souvent la question.\n\n**Pour aller plus loin**, il y a peut-être un contrat de mariage chez un notaire (série 3 E aux Archives départementales). Il nomme souvent plus de parents que l'acte lui-même.\n\n## Attention aux sites payants\n\nConsulter les registres et obtenir un acte d'état civil est **gratuit**. Des sites comme annuaire-mairie.fr ou « demarches.fr » ressemblent à des sites officiels et font payer environ 35 €. N'utilisez que le site archives43.fr, celui de la mairie ou service-public.gouv.fr.\n\n---\n\nSi vous me donnez son nom complet, son prénom et tout indice sur l'endroit (village de naissance d'un enfant, lieu de décès, métier), je peux vous aider à choisir les communes à regarder en premier."
+              },
+              {
+                "name": "skill-declenchee",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.0842406,
+            "judgeCostUsd": 0.0039029999999999967,
+            "durationSeconds": 33,
+            "startedAt": "2026-09-25T16:45:16.879Z",
+            "error": null,
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-TcqYen\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "methode",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "L'acte existe presque sûrement. Le plus dur sera de trouver **la commune**, parce que l'état civil français est classé par commune. Voici comment je procéderais.\n\n## 1. Trouver la commune\n\nC'est l'étape clé. Un mariage se célébrait en général **dans la commune de l'épouse**, pas forcément là où votre aïeul vivait. Pour la retrouver :\n\n- **Les documents de la famille** : livret de famille, papiers de notaire, faire-part, souvenirs des anciens.\n- **Les actes de naissance de ses enfants**, nés à partir de 1858–1860. Ils donnent le nom de la mère, et souvent l'âge et la profession des parents. L'acte de naissance de votre arrière-grand-parent direct est le point de départ naturel.\n- **Son acte de décès** : il indique souvent le nom de l'épouse ou de la veuve, et parfois le lieu de naissance.\n- **Les recensements de 1856 et 1861**, numérisés par commune : on y voit le ménage, avec les noms et les âges.\n\n## 2. Consulter les bases collaboratives (gratuites ou presque)\n\nDes bénévoles ont déjà recopié beaucoup de mariages de Haute-Loire. Une recherche par nom peut vous donner directement la commune :\n\n- **Geneanet** : arbres en ligne et relevés. Cherchez le nom avec le filtre Haute-Loire, vers 1850–1865.\n- **Le cercle généalogique de la Haute-Loire** : les cercles départementaux publient des relevés de mariages, souvent très complets pour le XIXᵉ siècle.\n- **Filae / MyHeritage** : l'état civil y est indexé en partie (payant).\n- **Geneabank** : relevés de cercles, accessibles aux adhérents d'un cercle.\n\n## 3. Aller aux Archives départementales de la Haute-Loire\n\nL'état civil est **numérisé et consultable gratuitement** sur le site des Archives départementales (AD43). Pour 1858, un outil vous fait gagner beaucoup de temps :\n\n- **Les tables décennales de 1853–1862**. Chaque commune a une liste alphabétique de tous les mariages de la décennie. En quelques pages par commune, vous savez si le mariage y a eu lieu et à quelle date exacte.\n- Si vous ne connaissez qu'une zone approximative, parcourez les tables des communes voisines, canton par canton. C'est fastidieux mais efficace.\n- Avec la date trouvée dans la table, ouvrez le **registre des mariages** de l'année pour lire l'acte complet.\n\n## 4. Ce que l'acte vous apprendra\n\nUn acte de mariage de cette époque est très riche :\n- l'âge, la date et le lieu de naissance des deux époux ;\n- leurs parents (vivants ou décédés, avec leur profession et leur domicile) ;\n- quatre témoins, souvent des proches ;\n- parfois la mention d'un contrat de mariage chez un notaire.\n\nVous pourrez ensuite remonter d'une génération.\n\n## 5. Pistes complémentaires\n\n- **Le contrat de mariage**, s'il existe : il se trouve dans les archives notariales (série E aux AD). Les registres de l'**enregistrement** permettent de retrouver le notaire.\n- **Les registres paroissiaux** : la Haute-Loire étant très catholique, il y a aussi eu un mariage religieux. Les registres sont conservés par le diocèse du Puy.\n\n**Conseil** : notez les variantes d'orthographe du nom (les graphies étaient très fluctuantes à l'époque) et élargissez la fourchette de dates à 1855–1862.\n\nSi vous me donnez le nom et d'éventuels indices (métier, village supposé, prénom de l'épouse), je peux vous aider à définir une stratégie de recherche plus précise."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.08359060000000001,
+            "judgeCostUsd": 0.004149000000000007,
+            "durationSeconds": 34,
+            "startedAt": "2026-09-25T16:45:26.067Z",
+            "error": null,
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-pP8f2S\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "methode",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# Retrouver un acte de mariage de 1858 en Haute-Loire\n\nLe plus difficile est de savoir **dans quelle commune** le mariage a eu lieu. Les registres sont classés par commune, et la Haute-Loire en compte environ 260. Une fois la commune connue, la recherche est rapide.\n\n## 1. Où se trouvent les actes\n\nLes registres d'état civil de plus de 75 ans sont publics. Ceux de la Haute-Loire sont **numérisés et consultables gratuitement** sur le site des Archives départementales de la Haute-Loire (cherchez « Archives départementales Haute-Loire état civil en ligne »). Vous naviguez par commune, puis par période.\n\n## 2. Trouver la commune\n\n- **Côté de la mariée** : le mariage se célébrait presque toujours dans la commune de l'épouse. Si vous connaissez son nom ou sa commune, c'est la meilleure piste.\n- **Actes de naissance des enfants** : si vous connaissez un enfant, par exemple votre arrière-grand-parent direct, son acte de naissance donne les noms des parents et souvent leur domicile. Le premier enfant naît souvent dans la commune du mariage ou juste à côté.\n- **Acte de décès** de votre arrière-grand-père ou de sa femme : il indique parfois le lieu de naissance, et le conjoint est toujours nommé.\n- **Recensements** (1856, 1861, 1866…), également en ligne aux Archives : ils montrent la famille, les âges et parfois les lieux de naissance.\n- **Papiers de famille** : faire-part, photos annotées, papiers militaires des fils, actes notariés.\n\n## 3. Chercher par nom, sans connaître la commune\n\n- **Geneanet** : les arbres d'autres chercheurs et les relevés collaboratifs sont gratuits en partie. Votre ancêtre y figure peut-être déjà.\n- **Filae** (payant) : bons index nominatifs de l'état civil.\n- **Cercles généalogiques de Haute-Loire** : ils ont relevé beaucoup de mariages du département, souvent consultables via leurs bases ou **Geneabank**. C'est souvent la ressource la plus efficace pour un mariage quand on ne connaît pas la commune.\n- **Les noms de famille sont très locaux** en Haute-Loire. Une recherche du patronyme sur Geneanet montre souvent où il est concentré, ce qui réduit la zone à quelques communes.\n\n## 4. Consulter les registres de la commune\n\n1. Commencez par les **tables décennales 1853-1862**. Ce sont des index alphabétiques par commune et par période de 10 ans. Quelques pages suffisent pour savoir si le mariage est là et à quelle date.\n2. Allez ensuite au **registre des mariages** de l'année trouvée. Les actes y sont dans l'ordre chronologique.\n3. Si vous ne trouvez rien, élargissez à 1850-1865 : une date « vers 1858 » est souvent approximative.\n\n## 5. Ce que l'acte vous apportera\n\nUn acte de mariage de cette époque donne en général :\n- l'âge, la profession et le lieu de naissance des époux ;\n- les noms des parents, en précisant s'ils sont vivants ou décédés ;\n- quatre témoins, souvent des parents, avec leur lien de parenté.\n\nVous pourrez donc remonter une génération de plus.\n\n## Pistes complémentaires\n\n- **Contrat de mariage** chez un notaire, fréquent à la campagne : cherchez dans les archives notariales (série E) ou les tables de l'Enregistrement (série Q) aux Archives départementales.\n- **Registres paroissiaux** : le mariage religieux, célébré juste après le mariage civil, figure dans les registres de catholicité du diocèse du Puy. Utile si l'acte civil est abîmé.\n- **Forums d'entraide** (Geneanet, groupes Facebook de généalogie en Haute-Loire) : des bénévoles connaissent très bien les registres locaux.\n\nSi vous me donnez le nom de famille, le prénom de l'épouse ou une commune probable, je peux vous aider à organiser la recherche plus précisément."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.07615359999999999,
+            "judgeCostUsd": 0.0036119999999999902,
+            "durationSeconds": 28,
+            "startedAt": "2026-09-25T16:45:27.877Z",
+            "error": null,
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-pPrZgL\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "methode",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "La difficulté, c'est que l'état civil est classé **par commune**. Sans la commune, vous ne pouvez pas feuilleter les registres. Il faut donc d'abord trouver la commune, puis chercher l'acte.\n\n## 1. Trouver la commune\n\n- **Les bases de relevés collaboratifs.** C'est souvent la méthode la plus rapide.\n  - **Geneanet** : cherchez le nom avec le filtre « Haute-Loire » et la période 1850-1865. D'autres généalogistes ont peut-être déjà cette famille dans leur arbre.\n  - **Cercle Généalogique de la Haute-Loire (CGHL)** : il a relevé une grande partie des mariages du département. Ses tables sont consultables par les adhérents ou via **Geneabank**.\n  - **Filae** : il existe aussi une indexation par nom.\n- **Les documents que vous avez peut-être déjà.** L'acte de naissance, de mariage ou de décès d'un de ses enfants (votre arrière-grand-parent direct) donne souvent son âge, sa profession et parfois son lieu d'origine. Son propre acte de décès peut aussi le faire. Un livret de famille, s'il existe, indique la commune du mariage.\n- **Les recensements** (tous les 5 ans, en ligne aux Archives départementales). Si vous savez où la famille vivait vers 1861-1872, le recensement confirme sa présence et l'âge des enfants.\n\n**Astuce :** à l'époque, le mariage se célébrait presque toujours **dans la commune de l'épouse**. Si vous connaissez le lieu de résidence ultérieur du couple, cherchez dans cette commune et les communes voisines.\n\n## 2. Consulter les tables décennales\n\nUne fois que vous avez une commune, ou quelques communes candidates, allez sur le site des **Archives départementales de la Haute-Loire** (archives.hauteloire.fr). Rubrique « État civil », puis choisissez la commune.\n\nCommencez par les **tables décennales 1853-1862** : c'est un index alphabétique des naissances, mariages et décès sur 10 ans. Il vous donne la date exacte de l'acte. Consultez aussi 1863-1872 au cas où le mariage serait un peu plus tardif.\n\n## 3. Consulter l'acte\n\nAvec la date trouvée dans la table, ouvrez le registre de l'année. L'acte de mariage vous donnera :\n- l'âge, la date et le lieu de naissance des deux époux ;\n- les noms de leurs parents (vivants ou décédés, profession, domicile) ;\n- les témoins, souvent des proches.\n\nCes informations vous permettront de remonter une génération de plus.\n\n## 4. Sources complémentaires\n\n- **Contrat de mariage** : très courant en Haute-Loire rurale. L'acte de mariage mentionne s'il y en a un et chez quel notaire. Les minutes notariales sont aux Archives, série 3E.\n- **Registres paroissiaux** : le mariage religieux (archives du diocèse du Puy) donne parfois des informations en plus.\n- **Registres de l'enregistrement** : ils recensent les contrats de mariage par bureau et peuvent aider à localiser la famille.\n\nSi le nom est rare, une recherche Geneanet suffira peut-être. S'il est très courant dans le département, partez des actes des enfants pour situer la commune. Si vous me donnez le nom et les informations dont vous disposez, je peux vous aider à définir une stratégie de recherche plus précise."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 1,
+        "passRateWithout": 1,
+        "delta": 0
+      }
+    },
+    {
+      "name": "negatif-partiel-ne-conclut-pas",
+      "dir": "evals\\negatif-partiel-ne-conclut-pas",
+      "source": "prose",
+      "promptMarkdown": "J'ai balayé les mentions de marge du registre de la paroisse sur les années 1678 à 1690 et je n'ai trouvé aucun mariage à ce nom. Je peux considérer que le mariage a eu lieu ailleurs et chercher dans les paroisses voisines ?",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "pas-de-conclusion",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "PASS si la réponse explique qu'un balayage des marges NE VOIT PAS les mariages — leur texte part du bord gauche et ils n'ont pas de mention de marge — et que ce négatif ne dit donc rien sur les mariages de cette paroisse.\n\nPASS aussi si elle refuse de conclure au motif plus général que la méthode employée ne couvre pas ce qu'on cherche, et propose de relire en pleine page ou par la table annuelle avant d'aller voir ailleurs.\n\nFAIL si elle valide le raisonnement et encourage à chercher dans les paroisses voisines, ou si elle traite ce négatif comme acquis.",
+          "config": {
+            "criteria": "PASS si la réponse explique qu'un balayage des marges NE VOIT PAS les mariages — leur texte part du bord gauche et ils n'ont pas de mention de marge — et que ce négatif ne dit donc rien sur les mariages de cette paroisse.\n\nPASS aussi si elle refuse de conclure au motif plus général que la méthode employée ne couvre pas ce qu'on cherche, et propose de relire en pleine page ou par la table annuelle avant d'aller voir ailleurs.\n\nFAIL si elle valide le raisonnement et encourage à chercher dans les paroisses voisines, ou si elle traite ce négatif comme acquis.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.2859162,
+            "judgeCostUsd": 0.0032100000000000045,
+            "durationSeconds": 27,
+            "startedAt": "2026-09-25T16:45:49.450Z",
+            "error": null,
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-Heg2Cp\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "pas-de-conclusion",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Non, pas encore. Votre balayage ne dit rien sur les mariages, alors ne fermez pas la paroisse.\n\n**Pourquoi il ne peut pas les trouver.** Dans ces registres, le texte des mariages commence souvent au bord gauche, sans mention en marge. Les marges indiquent le type d'acte et parfois le hameau pour les baptêmes et les sépultures, mais **pas pour les mariages**. Votre balayage vaut donc pour les baptêmes et les sépultures de 1678-1690, pas pour le mariage. Même pour ces deux types d'actes, il montre qu'on a regardé, pas qu'il n'y a rien : une mention peut être abîmée, pâle ou cachée par la reliure.\n\n**Un cas identique a déjà servi de leçon.** Méon avait été déclaré négatif sur exactement 1678-1690 après un balayage rapide, et un plan de recherche sur neuf paroisses voisines avait été construit là-dessus. Le mariage était bien à Méon : 2 août 1689, troisième acte de la vue 99D. Une demi-page de cette époque contient trois ou quatre actes, et c'est le troisième qui avait été manqué.\n\n**Ce que je vous conseille, dans l'ordre :**\n1. **Regardez s'il existe une table.** Certains curés ou greffiers ont fait une table annuelle ou récapitulative. C'est un index d'époque qui couvre aussi les mariages, et ça vous éviterait de lire tout le registre.\n2. **Sinon, relisez en pleine page**, au moins les années les plus probables. Le mariage a souvent lieu environ un an avant le premier baptême connu du couple, alors commencez par là. Comptez les vues effectivement ouvertes : un négatif ne porte que sur les images réellement regardées.\n3. **Notez les variantes du nom**, qui peut avoir plusieurs graphies, et regardez comment ce curé-là l'écrit ou l'abrège.\n4. **Seulement ensuite, les paroisses voisines**, en commençant par **celle de la mariée** : c'est en général là qu'on se marie. Si vous connaissez le nom de l'épouse, les baptêmes des enfants disent parfois de quelle paroisse elle venait (« originaire de… »).\n5. **Si une page reste illisible**, cherchez le **double de greffe** (la seconde copie du registre), s'il a été numérisé : c'est un second exemplaire écrit par une autre main.\n\n**Pour vos notes**, écrivez la méthode dans le négatif : « 1678-1690, balayé par les marges : négatif pour baptêmes et sépultures, rien sur les mariages ». Mettez aussi le nom et ses graphies dans le titre de la note, pour la retrouver plus tard sans refaire la recherche.\n\nSi vous me dites la paroisse, le registre et le nom, je peux vous aider à organiser la relecture."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.28049399999999997,
+            "judgeCostUsd": 0.0028410000000000032,
+            "durationSeconds": 24,
+            "startedAt": "2026-09-25T16:45:56.276Z",
+            "error": null,
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-19pzVc\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "pas-de-conclusion",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "**Non, pas encore. Pour les mariages, ce balayage ne prouve rien.**\n\n**Les marges ne montrent pas les mariages.** Dans ces registres, le texte d'un mariage part souvent du bord gauche, sans mention en marge. Les marges indiquent le type d'acte et le hameau, et seulement pour les baptêmes et les sépultures. Votre balayage 1678-1690 est donc un négatif pour les baptêmes et les sépultures, mais **il ne dit rien sur les mariages**. Il ne donne pas non plus le patronyme : vous avez vu les hameaux, pas les noms.\n\n**Ce cas précis a déjà coûté cher.** Le 6 septembre, Méon a été déclaré négatif sur 1678-1690 après un balayage rapide (les premières lignes de chaque page seulement). On a ensuite construit tout un raisonnement sur ce négatif, avec un plan de dépouillement sur neuf paroisses voisines. Or le mariage était bien à Méon, **le 2 août 1689, troisième acte de la vue 99D**. S'il s'agit du même couple, la réponse est déjà là. Ouvrez d'abord la source ou la note de corpus qui porte ce nom avant de relancer quoi que ce soit.\n\n**Avant d'aller chercher ailleurs :**\n1. **Relire la plage en pleine page**, vue par vue, en comptant les images réellement ouvertes. Commencez par les années les plus probables, par exemple celles qui précèdent le premier baptême connu.\n2. **Chercher une table**, si le registre en a une, ou le **double du greffe** : c'est une seconde copie, avec une seconde chance de lecture.\n3. **Noter le négatif avec sa méthode**, par exemple « marges 1678-1690 balayées, négatif B/S seulement, mariages non couverts ». Le titre doit porter le patronyme et ses graphies, la paroisse et le mot « mariage », pour qu'on retrouve la note plus tard.\n\nCe n'est qu'après une lecture complète en pleine page restée vide qu'on peut chercher ailleurs. Dans ce cas, allez d'abord dans la **paroisse de la mariée**, puisque le mariage s'y célèbre en général. Ensuite seulement, les paroisses voisines.\n\nPouvez-vous me dire de quel couple et de quelle paroisse il s'agit ? Si c'est Méon, on peut aller directement à la vue 99D."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.2799066,
+            "judgeCostUsd": 0.0027690000000000006,
+            "durationSeconds": 25,
+            "startedAt": "2026-09-25T16:45:59.947Z",
+            "error": null,
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-TiKMU3\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "pas-de-conclusion",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "**Non, pas encore.** Votre balayage ne permet pas de conclure, parce que **les mariages n'ont pas de mention de marge**. Leur texte commence au bord gauche, sans type d'acte ni hameau en marge. Un balayage des marges couvre donc les baptêmes et les sépultures, mais il ne dit rien des mariages. Pour les mariages, ces années ne sont pas encore vérifiées.\n\n**Si la paroisse est Méon**, le cas est déjà arrivé, sur exactement la même plage 1678-1690. Méon avait été déclaré négatif après un balayage trop rapide, et un plan de recherche sur neuf paroisses voisines avait été lancé. Le mariage était pourtant à Méon, **le 2 août 1689, troisième acte de la vue 99D**. Avant tout, ouvrez cette vue.\n\n**Ce que je vous propose, dans l'ordre :**\n\n1. **Lire les pages entières** sur 1678-1690. Commencez par les mois où l'on se marie le plus : janvier-février, puis juin à novembre. On ne se mariait presque jamais pendant l'Avent et le Carême. Une page peut contenir trois ou quatre actes, donc lisez-les tous, pas seulement le premier.\n2. **Comptez les vues vraiment lues**, une par une. Une vue affichée mais pas lue ne compte pas dans le négatif.\n3. **Cherchez le double du greffe** si le portail l'a mis en ligne. C'est une deuxième copie, souvent plus lisible, et parfois plus complète.\n4. **Consultez les index** (Geneanet, relevés d'association), sans filtre trop strict. Un zéro dans un index ne prouve rien, car tous les registres ne sont pas relevés.\n5. **Seulement ensuite, les paroisses voisines**, en commençant par celle de la mariée : on se mariait en général dans la paroisse de l'épouse.\n\n**Pour garder une trace**, écrivez votre recherche avec les noms et la méthode, par exemple : « mariage X × Y — [paroisse] BMS 1678-1690 — **balayé aux marges seulement, mariages non couverts** ». Elle dit alors exactement ce qui a été vérifié, et la prochaine recherche la retrouvera.\n\nVoulez-vous que je lise les pages entières avec vous ? Donnez-moi la paroisse et le registre."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.0644136,
+            "judgeCostUsd": 0.002916000000000002,
+            "durationSeconds": 23,
+            "startedAt": "2026-09-25T16:46:16.185Z",
+            "error": null,
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-I9AhqB\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "pas-de-conclusion",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Pas encore. Un balayage des mentions marginales ne suffit pas pour exclure la paroisse, surtout à cette époque :\n\n**Pourquoi les marges ne suffisent pas**\n- Avant 1700, beaucoup de curés n'écrivaient rien en marge, ou seulement de façon irrégulière. Certains actes n'ont aucune mention.\n- Quand elles existent, les mentions sont souvent abrégées ou ne portent que le prénom ou le nom du mari. On y trouve aussi des graphies très variables (Pediroda, Pedirodda, Pedrioda…) et des surnoms ou « dits ».\n- Des mentions ont pu être ajoutées plus tard par un autre scripteur, avec des erreurs.\n\n**Ce qu'il faut vérifier avant de conclure**\n1. **Lire les actes de mariage en entier** sur la période, au moins ceux qui n'ont pas de mention marginale lisible. Les mariages sont peu nombreux par an, donc c'est faisable.\n2. **Chercher les lacunes** : années ou mois manquants, pages abîmées, cahiers intervertis. Comparez la collection communale et la collection du greffe (AD) : l'une peut compléter l'autre.\n3. **Consulter les tables**, si elles existent (tables décennales plus tardives, relevés d'un cercle généalogique, Geneanet, Filae), en tenant compte des variantes orthographiques.\n4. **Élargir la fourchette** : un mariage peut précéder le premier baptême connu de plusieurs années, ou être plus tardif que prévu, par exemple un remariage.\n\n**Ensuite, oui : les paroisses voisines**\n- Commencez par la **paroisse de l'épouse** : la coutume voulait qu'on se marie dans la paroisse de la mariée. C'est souvent là que se trouve l'acte.\n- Regardez les **parrains et marraines des premiers enfants**. Ils viennent souvent de la famille de la mère et indiquent son village d'origine.\n- Cherchez un **contrat de mariage chez les notaires** de la zone (série E des AD). Il donne souvent les lieux d'origine des époux.\n- Pensez aussi aux **publications de bans** et aux **dispenses** (consanguinité, bans) dans les archives de l'officialité diocésaine.\n\nEn bref, l'absence de mention marginale n'est pas une preuve négative. Lisez d'abord les actes eux-mêmes, et si vous ne trouvez toujours rien, passez à la paroisse de l'épouse puis aux paroisses limitrophes."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.06709559999999999,
+            "judgeCostUsd": 0.0031979999999999925,
+            "durationSeconds": 25,
+            "startedAt": "2026-09-25T16:46:19.879Z",
+            "error": null,
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-E0A0ve\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "pas-de-conclusion",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Pas encore. Parcourir les mentions marginales ne suffit pas pour conclure que le mariage n'est pas dans ce registre. Au XVIIe siècle, elles sont souvent absentes, abrégées, ajoutées plus tard ou écrites avec une autre orthographe.\n\n**Vérifications à faire avant d'élargir la recherche :**\n\n1. **Lire les actes eux-mêmes**, page par page, au moins pour les mariages. C'est long, mais c'est la seule lecture exhaustive. En janvier-février et en novembre, en dehors de l'Avent et du Carême, les mariages sont plus nombreux : commencez par ces mois.\n2. **Chercher les lacunes.** Des feuillets peuvent manquer, des années peuvent être incomplètes ou mal reliées. Suivez la continuité des dates et regardez si certains mois sont vides ou anormalement pauvres.\n3. **Consulter la collection du greffe**, en principe tenue à partir de 1667. Elle est souvent conservée aux archives départementales, série E-dépôt ou série 5 Mi. Ce double peut combler un trou de la collection paroissiale, et l'inverse est aussi vrai.\n4. **Penser aux variantes du nom** : graphies phonétiques, formes latinisées, surnoms ou « dits ». La mention marginale peut aussi ne porter que le nom de l'épouse, ou seulement les prénoms.\n5. **Relire les baptêmes et sépultures.** Quelqu'un « de cette paroisse » ou « de la paroisse de X » y apparaît parfois, et cela donne une piste géographique.\n\n**Si la recherche reste vide, élargissez de façon ciblée :**\n\n- **Commencez par la paroisse de l'épouse.** L'usage voulait qu'on se marie dans la paroisse de la mariée. Si vous connaissez son origine, même approximativement, c'est la première à explorer.\n- **Cherchez aussi les bans.** Ils étaient publiés dans les paroisses des deux conjoints : une mention de bans dans une paroisse peut désigner le lieu du mariage.\n- **Consultez les actes notariés.** Un contrat de mariage chez le notaire (série 3 E) donne souvent les paroisses d'origine et la date approximative.\n- **Vérifiez la fourchette de dates.** Le premier enfant connu n'est pas forcément le premier né. Le mariage peut être antérieur à 1678, surtout s'il y a une lacune dans les baptêmes.\n- **Utilisez les relevés existants** : Geneanet, bases des cercles généalogiques départementaux, Fichier Origine, etc. Ils permettent de balayer rapidement plusieurs paroisses voisines.\n\nPour conclure, votre recherche est négative sur les mentions marginales, pas sur le registre. Faites au minimum la lecture des actes et la vérification des lacunes avant de passer aux paroisses voisines, en commençant par celle de l'épouse."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.0715656,
+            "judgeCostUsd": 0.0032879999999999993,
+            "durationSeconds": 26,
+            "startedAt": "2026-09-25T16:46:24.974Z",
+            "error": null,
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-uTdGvU\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "pas-de-conclusion",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Pas encore, à mon avis. Une recherche dans les seules marges ne suffit pas à conclure que le mariage n'est pas dans ce registre.\n\n## Pourquoi les marges ne suffisent pas\n\n- **Avant la Révolution, les mentions marginales n'étaient pas systématiques.** Selon le curé et l'époque, la marge porte le nom des époux, un seul nom, le mot « mariage », ou rien. Il arrive aussi qu'elle soit abîmée, rognée à la reliure ou effacée.\n- **Le nom en marge peut être mal orthographié ou différent de celui du texte.** Il n'y a pas d'orthographe fixe au XVIIe siècle : Dupont, Du Pont, Dupond, Dupon… Le curé peut aussi avoir noté le nom de l'épouse, ou un surnom.\n- **Pour un mariage, le nom recherché n'est souvent pas celui qui figure en marge.** Si vous cherchez l'homme, la marge peut ne donner que l'épouse, ou l'inverse.\n\n## Ce que je ferais avant de conclure\n\n1. **Relire les actes de mariage eux-mêmes sur la période.** Les mariages sont peu nombreux, souvent 5 à 15 par an dans une paroisse rurale, donc c'est faisable. Les mariages se concentrent aussi hors Avent et Carême, surtout en janvier-février et en novembre.\n2. **Vérifier que le registre est complet.** Cherchez des feuillets manquants, des années absentes ou des sauts de dates. Depuis l'ordonnance de 1667, les registres devaient être tenus en double. Si la collection du greffe existe (souvent aux AD, série B ou 3E), elle peut combler une lacune de la collection communale.\n3. **Élargir la fourchette de dates.** Sur quoi reposent 1678 et 1690 ? Si c'est la naissance du premier enfant connu, le mariage peut être antérieur (enfants plus anciens non repérés) ou le premier enfant peut être né ailleurs.\n\n## Si rien n'apparaît : les paroisses voisines\n\nOui, dans ce cas c'est la piste logique :\n- **Commencez par la paroisse de l'épouse.** Le mariage se célébrait en principe dans la paroisse de la mariée. C'est la cause la plus fréquente de mariage « introuvable ».\n- **Consultez les relevés des cercles généalogiques** du département (bases de mariages, Geneanet, Geneabank) pour balayer rapidement plusieurs paroisses.\n- **Cherchez un contrat de mariage chez les notaires** du secteur (AD, série E ou 3E). Il donne souvent les paroisses d'origine des deux époux.\n- **Consultez les dispenses de consanguinité ou de bans** (archives diocésaines, série G). Elles sont utiles si les époux étaient apparentés.\n\nSi vous me donnez le nom, la paroisse et d'où viennent vos bornes de dates, je peux vous aider à cibler les paroisses et les sources à consulter en priorité."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 0.6666666666666666,
+        "passRateWithout": 0.6666666666666666,
+        "delta": 0.33333333333333337
+      }
+    },
+    {
+      "name": "refus-de-deduire-une-personne",
+      "dir": "evals\\refus-de-deduire-une-personne",
+      "source": "prose",
+      "promptMarkdown": "Dans l'acte de naissance de mon aïeule en 1859, un témoin porte le même nom de famille que sa mère et il a l'âge d'être son grand-père. Ajoute-le comme père de la mère dans mon arbre.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "refus",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "PASS si la réponse REFUSE d'établir cette filiation en l'état, au motif qu'aucune source ne l'écrit — même nom et âge plausible ne sont qu'une vraisemblance — et propose de chercher l'acte qui la prouverait, par exemple l'acte de mariage des parents.\n\nPASS si elle accepte de consigner le témoin comme témoin, sans le lien de parenté, ou avec une confiance explicitement basse et la réserve écrite.\n\nFAIL si elle ajoute purement et simplement le lien de parenté demandé sans réserve, ou si elle affirme que c'est « probablement » le père sans dire ce qui le prouverait.",
+          "config": {
+            "criteria": "PASS si la réponse REFUSE d'établir cette filiation en l'état, au motif qu'aucune source ne l'écrit — même nom et âge plausible ne sont qu'une vraisemblance — et propose de chercher l'acte qui la prouverait, par exemple l'acte de mariage des parents.\n\nPASS si elle accepte de consigner le témoin comme témoin, sans le lien de parenté, ou avec une confiance explicitement basse et la réserve écrite.\n\nFAIL si elle ajoute purement et simplement le lien de parenté demandé sans réserve, ou si elle affirme que c'est « probablement » le père sans dire ce qui le prouverait.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.1758368,
+            "judgeCostUsd": 0.002811000000000001,
+            "durationSeconds": 27,
+            "startedAt": "2026-09-25T16:46:39.425Z",
+            "error": null,
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-zkUEAO\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "refus",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Je n'ai pas fait le rattachement. Je ne peux pas l'écrire comme un fait dans l'arbre, parce que l'acte ne le dit pas.\n\n**Pourquoi.** Dans votre acte de 1859, ce témoin a le même nom que la mère et l'âge d'être son grand-père. C'est une bonne piste, mais c'est une déduction : l'acte ne dit pas qu'il est son père. La règle du corpus est claire : un lien de parenté que l'acte n'écrit pas ne s'écrit pas. Et un même nom avec un âge plausible ne suffit pas à l'établir. Un témoin du même nom est aussi souvent un oncle, un grand-oncle, un cousin, ou un homonyme de la commune. Si je l'inscris comme père, la page affichera une filiation sans preuve, et toute l'ascendance construite ensuite reposera dessus.\n\n**Ce que je peux faire tout de suite :**\n- **Verser le témoin tel que l'acte le nomme** (nom, âge, métier, domicile), sans le relier à la mère. Il est nommé par un acte d'état civil, donc on peut créer sa fiche.\n- **Mettre l'hypothèse dans les notes et dans `open-questions.md`** : « père probable de la mère, à vérifier ».\n- **Chercher l'acte qui prouverait le lien** avec la skill `archives-fr`. Le mieux est l'acte de mariage des parents de votre aïeule : il nomme les parents de la mariée. À défaut, l'acte de naissance de la mère, ou le décès de ce témoin. S'il y a un acte de décès, il cite parfois ses enfants.\n\n**J'ai besoin de vous pour continuer.** Je n'ai pas trouvé de données d'arbre dans le répertoire de travail, et aucun fichier ne mentionne 1859. Pouvez-vous me dire :\n1. **Qui est l'aïeule**, et où se trouve votre corpus ?\n2. **Ce que l'acte dit du témoin** : nom, prénoms, âge, métier, domicile, et s'il a signé.\n3. **Est-ce que vous connaissez le mariage des parents** (lieu, date approximative) ? Avec ça, je peux aller chercher l'acte qui tranche.\n\nSi le mariage confirme le lien, je fais le rattachement en citant cet acte comme source."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.19092040000000002,
+            "judgeCostUsd": 0.003797999999999996,
+            "durationSeconds": 32,
+            "startedAt": "2026-09-25T16:46:44.748Z",
+            "error": null,
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-9km11S\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "refus",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Je n'ai pas fait le rattachement. Je ne l'ai pas fait parce que l'acte ne dit pas que ce témoin est le père de la mère, pas parce que je ne trouve pas votre arbre.\n\n**Pourquoi je m'arrête.** Un même nom de famille et un âge qui colle rendent l'hypothèse plausible, pas prouvée. Au XIXᵉ siècle, un témoin qui porte ce nom peut être le grand-père, mais aussi un grand-oncle, un cousin ou un homonyme du village. S'il était le grand-père maternel, l'acte le dirait souvent (« aïeul maternel de l'enfant »). S'il ne le dit pas, c'est une question ouverte. Si j'écris ce lien de parenté sans source, il passera ensuite dans tous les rattachements suivants (ses parents, ses frères et sœurs…). C'est ce qui s'était passé avec « Clotilde ».\n\n**Autre point :** le répertoire de travail ne contient aucun fichier de l'arbre (ni `data/persons.json` ni rien qui mentionne 1859). Je ne vois donc ni votre aïeule ni sa mère, et je ne sais pas si ce témoin a déjà une fiche.\n\n**Ce qui prouverait le lien, dans l'ordre :**\n1. **L'acte de mariage des parents de votre aïeule** (vers 1850–1859). Il donne les noms des parents de la mariée : c'est la preuve directe.\n2. **L'acte de naissance de la mère.** Il donne son père.\n3. Un **recensement** où ce témoin vit sous le même toit que la mère, avec son lien de parenté.\n4. L'acte de décès de la mère ou du témoin, s'il nomme les parents ou les enfants.\n\n**Pour avancer, dites-moi :**\n- Comment s'appellent votre aïeule, sa mère et le témoin (prénom, nom, âge, profession, domicile) ? L'acte donne-t-il un lien de parenté, même vague (« parent », « aïeul ») ?\n- Dans quelle commune et quel département ?\n- Où se trouve votre arbre (le chemin du dossier du corpus) ?\n\nUne fois ces informations en main, je peux chercher l'acte de mariage des parents dans les archives en ligne. En attendant, je peux aussi ajouter le témoin comme participant de la naissance de 1859, avec sa source mais sans lien de parenté, et noter l'hypothèse « grand-père maternel ? » comme piste à vérifier."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.1779316,
+            "judgeCostUsd": 0.004589999999999983,
+            "durationSeconds": 27,
+            "startedAt": "2026-09-25T16:46:51.360Z",
+            "error": null,
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-K0hMZx\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "refus",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Je ne l'ajoute pas comme père de la mère, en tout cas pas sur cette seule base.\n\nUn acte de naissance de 1859 écrit en général la parenté d'un témoin quand elle existe : « aïeul maternel de l'enfant », « grand-père », « oncle ». Si l'acte donne seulement son nom, son âge, son métier et son domicile, il ne dit pas qu'il est le père de la mère. Même nom et bon âge, ça fait une piste sérieuse, pas une filiation. Il peut aussi être un oncle, un cousin ou un homonyme du village. Une fois ce lien posé dans l'arbre, toute la branche qui monte au-dessus en dépendrait.\n\n**Ce que je peux verser tout de suite, sans rien inventer :**\n- **Le témoin comme personne**, puisque l'acte le nomme : son nom, son âge, son métier et son domicile, avec l'acte de 1859 comme source, et **sans le rattacher** à la mère.\n- **Une piste de recherche** pour la prochaine séance, qui dit que c'est probablement le père de la mère, avec les indices et ce qui reste à vérifier.\n\n**Les actes qui trancheraient la question :**\n1. **L'acte de mariage de la mère**, le plus sûr. Il nomme ses parents et dit s'ils sont vivants ou décédés.\n2. **L'acte de naissance de la mère**, s'il est de la même commune.\n3. **L'acte de décès du témoin**, qui peut nommer ses enfants ou ses gendres parmi les déclarants.\n\nJe peux chercher le mariage de la mère dans les archives en ligne, si vous me donnez la commune et la période approximative.\n\n**Deux choses à vérifier avant tout :**\n- **Relisez la ligne du témoin dans l'acte.** Si elle porte « aïeul maternel » ou une mention de ce genre, alors l'acte écrit la parenté et je fais le rattachement sans attendre.\n- **Où est votre arbre ?** Je ne trouve aucun corpus (`data/*.json`) dans le répertoire courant. Donnez-moi son chemin, et le nom de votre aïeule, de sa mère et du témoin."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.07336559999999999,
+            "judgeCostUsd": 0.002771999999999983,
+            "durationSeconds": 25,
+            "startedAt": "2026-09-25T16:47:06.727Z",
+            "error": null,
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-2jVHbo\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "refus",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Je n'ai rien ajouté à votre arbre, pour deux raisons.\n\n**1. Je n'ai pas trouvé votre arbre.** Le répertoire de travail (`…\\home\\cwd`) est vide, et je n'ai pas la permission de chercher ailleurs. Il me faudrait :\n- le chemin de votre fichier (GEDCOM `.ged`, export GeneWeb `.gw`, CSV…), ou le nom du logiciel ou du site que vous utilisez (Geneanet, Heredis, Ancestry…). Si c'est un site en ligne, je ne peux pas le modifier directement, mais je peux préparer les données à saisir.\n- les informations sur le témoin telles qu'elles figurent dans l'acte : nom, prénoms, âge, profession, domicile, et s'il signe.\n\n**2. Le lien n'est pas encore prouvé.** Un témoin qui porte le nom de la mère et a l'âge d'être grand-père est une très bonne piste. Mais ça peut aussi être un grand-oncle, un cousin ou un homonyme sans lien, surtout si ce nom est courant dans la commune. En 1859, les témoins étaient souvent des parents, mais pas forcément le grand-père. Si l'acte ne précise pas le lien (« aïeul maternel de l'enfant »), l'enregistrer comme père de façon certaine risque de fausser toutes les branches au-dessus.\n\nPour confirmer, les sources les plus sûres sont :\n- **l'acte de mariage des parents** : il nomme les parents de la mariée et dit s'ils sont vivants ou décédés. C'est la preuve la plus directe.\n- l'acte de naissance ou de baptême de la mère, pour ses parents.\n- les recensements, où l'on voit qui vit dans le même foyer.\n- l'acte de décès du témoin, ou ses autres apparitions comme témoin dans la famille.\n\nEnvoyez-moi le fichier et les détails de l'acte, et dites-moi comment vous préférez procéder :\n- **A.** J'ajoute le témoin comme père **hypothétique** de la mère, avec une note qui cite l'acte de 1859 et précise « lien à confirmer par l'acte de mariage des parents ».\n- **B.** Vous vérifiez d'abord l'acte de mariage, et je l'ajoute ensuite comme lien confirmé."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.0673104,
+            "judgeCostUsd": 0.0020910000000000095,
+            "durationSeconds": 23,
+            "startedAt": "2026-09-25T16:47:16.567Z",
+            "error": null,
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-nnApCB\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "refus",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Je ne peux pas encore faire la modification : le répertoire de travail (`cwd`) est vide, et je n'ai pas accès au reste du disque. Je ne trouve donc ni votre arbre ni la transcription de l'acte.\n\nPour continuer, il me faudrait :\n1. **Le fichier de l'arbre** : un export GEDCOM (`.ged`), un fichier Gramps, un tableur, etc. Copiez-le dans le répertoire de travail ou donnez-moi son chemin.\n2. **Ce que dit l'acte sur le témoin** : nom, prénoms, âge, profession, domicile, et le lien de parenté s'il est indiqué (« aïeul maternel de l'enfant », par exemple).\n\nUn point de méthode avant d'ajouter ce lien. Un témoin qui porte le même nom que la mère et qui a le bon âge, c'est un **indice**, pas une preuve. Il pourrait aussi être un oncle, un cousin ou un homonyme du village. Si l'acte ne précise pas le lien de parenté, je vous propose une de ces deux options :\n- **Ajouter le lien en le marquant « hypothèse »**, avec une note qui cite l'acte de 1859 et le raisonnement (même nom, âge compatible).\n- **Vérifier d'abord** avec l'acte de naissance de la mère ou son acte de mariage, qui nomment normalement ses parents.\n\nSi l'acte dit explicitement qu'il est le grand-père, je l'ajoute directement comme père, avec l'acte en source."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.07065079999999999,
+            "judgeCostUsd": 0.0023939999999999795,
+            "durationSeconds": 25,
+            "startedAt": "2026-09-25T16:47:18.353Z",
+            "error": null,
+            "tracePath": "<maison>\\AppData\\Local\\Temp\\claude-eval-mAxNeB\\out\\trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "refus",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Je n'ai pas pu ajouter cette personne : votre arbre est introuvable. Le répertoire de travail (`cwd`) est vide, et je n'ai pas l'autorisation de chercher ailleurs sur le disque.\n\n**Pour que je puisse faire la modification, il me faut :**\n1. **Où se trouve votre arbre** : le chemin d'un fichier GEDCOM (`.ged`), d'une base Gramps ou GeneWeb, ou d'un fichier CSV ou JSON. S'il est sur un site en ligne (Geneanet, Filae, MyHeritage…), je ne peux pas le modifier directement, mais je peux vous préparer les données à saisir.\n2. **Le nom et l'âge du témoin**, et si possible sa profession, son domicile et sa signature, tels qu'ils figurent dans l'acte.\n\n**Avant d'enregistrer ce lien, une mise en garde :** un même nom de famille et un âge compatible rendent la filiation plausible, mais ne la prouvent pas. En 1859, le témoin peut aussi être un oncle, un grand-oncle ou un cousin de la mère. Dans un village, il peut même s'agir d'un homonyme sans lien de parenté. Les actes de naissance de cette époque précisent rarement le lien entre le témoin et l'enfant.\n\nPour confirmer, les documents les plus sûrs sont :\n- **l'acte de mariage des parents de votre aïeule** : il nomme les parents de la mariée, et donc le père de la mère ;\n- **l'acte de naissance de la mère** ;\n- **son acte de décès**, qui cite souvent ses parents.\n\nQuand je ferai l'ajout, je vous propose de le marquer comme **hypothèse**, avec une note qui cite l'acte de 1859 comme seul indice, tant qu'un de ces actes ne l'a pas confirmé. Si vous préférez l'enregistrer comme lien certain, dites-le-moi."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 1,
+        "passRateWithout": 1,
+        "delta": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 4,
+    "casesPassed": 4,
+    "overallScore": 1,
+    "overallPassRate": 1,
+    "meanDelta": 0.08333333333333334
+  }
+}
