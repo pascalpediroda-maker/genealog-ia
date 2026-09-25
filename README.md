@@ -39,7 +39,7 @@ And three photographs that had no caption: a scrap of film poster dated one to a
 ## Install
 
 ```bash
-claude plugin marketplace add pascalpediroda-maker/genealog-ia-plugin
+claude plugin marketplace add pascalpediroda-maker/genealog-ia
 claude plugin install genealog-ia@genealog-ia
 ```
 
