@@ -1,0 +1,50 @@
+# Les évals tournent ICI et pas sur la machine de l'auteur.
+#
+# `claude plugin eval` n'a pas de bac à sable sous Windows natif : dès qu'un cas accorde
+# Bash, le run est refusé. Et un environnement fixe donne des scores plus stables qu'un
+# poste de travail.
+#
+# ⚠️ Déclenchement MANUEL, et c'est voulu : chaque exécution est une vingtaine d'appels
+# au modèle, facturés au compte qui porte le secret. Une suite lancée à chaque push
+# coûterait sans rien apprendre de plus.
+name: evals
+
+on:
+  workflow_dispatch:
+    inputs:
+      case:
+        description: "Un seul cas (laisser vide pour toute la suite)"
+        required: false
+        type: string
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Installer Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Lancer la suite
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -n "${{ inputs.case }}" ]; then
+            claude plugin eval . --case "${{ inputs.case }}" --no-publish
+          else
+            claude plugin eval . --no-publish
+          fi
+
+      - name: Garder le rapport
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rapport-evals
+          path: evals/results/
+          retention-days: 30
