@@ -1,0 +1,13 @@
+{
+  "name": "genealog-ia",
+  "description": "Genealogy research for Claude Code: find the records, read the handwriting, and write what they say into a documented family history — with the rules that stop it inventing the rest.",
+  "owner": {
+    "name": "Pascal Pediroda"
+  },
+  "plugins": [
+    {
+      "name": "genealog-ia",
+      "source": "./"
+    }
+  ]
+}
