@@ -1,0 +1,53 @@
+{
+ "_pourquoi": [
+  "CE DEPOT SERT TROIS FAMILLES, ET IL LES DISTINGUAIT PAR CINQ VARIABLES D'ENVIRONNEMENT.",
+  "GENEALOGIA_DATA, _MEDIA, _OUT, _GEDCOM, _TITRE : cinq chaines a poser d'un coup, sans",
+  "que rien ne verifie qu'elles parlent du meme arbre. En oublier une attelait les donnees",
+  "d'une famille au fichier d'une autre, en silence -- c'est arrive le 18 septembre 2026,",
+  "poc/index.html s'est retrouve avec les 105 personnes de cet ami sous le titre du corpus",
+  "du généalogiste. Une garde a ete posee le jour meme (corpus_io.sortie), qui REFUSE l'attelage",
+  "croise. Le généalogiste, en la lisant : « ca s'appellerait pas plus clairement en passant l'arbre",
+  "en argument ? » -- et il a raison, parce qu'une garde rend la faute DETECTABLE quand un",
+  "argument la rend INEXPRIMABLE. On nomme l'arbre une fois, les chemins en decoulent, il",
+  "n'y a plus de seconde variable a se tromper.",
+  "",
+  "LES CHEMINS SONT ECRITS EN TOUTES LETTRES, PAS DEDUITS D'UNE CONVENTION. Les deux corpus",
+  "du NAS suivent aujourd'hui le meme rangement -- data/, index.html, media.json sous une",
+  "racine -- mais celui du depot ne le suit pas, et une convention qui souffre une exception",
+  "n'est plus une convention : c'est une regle implicite que la prochaine famille enfreindra",
+  "sans le savoir. Cette table se relit, et c'est tout ce qu'on lui demande.",
+  "",
+  "L'ADRESSE DE L'ARTEFACT N'EST PAS ICI : elle vit dans `_meta.artefact` du persons.json de",
+  "chaque corpus, avec les adresses abandonnees a cote. Un seul endroit, et c'est celui qui",
+  "voyage avec les donnees -- un corpus qu'on deplace emporte son adresse."
+ ],
+ "arbres": {
+  "paire": {
+   "nom": "PAIRÉ / PEDIRODA — la famille du généalogiste",
+   "racine": ".",
+   "data": "data",
+   "media": "poc/media.json",
+   "page": "poc/index.html",
+   "gedcom": "export/paire.ged",
+   "titre": null
+  },
+  "esperet": {
+   "nom": "DUPONT & LE MOUËL — la famille de un ami",
+   "racine": "<archives>/DUPONT - Prenom",
+   "data": "data",
+   "media": "media.json",
+   "page": "index.html",
+   "gedcom": "esperet.ged",
+   "titre": "Espéret & Le Mouel"
+  },
+  "arrouard": {
+   "nom": "MARTIN & VITHMANN — la famille d'une amie",
+   "racine": "<archives>/MARTIN - Prenom",
+   "data": "data",
+   "media": "media.json",
+   "page": "index.html",
+   "gedcom": "arrouard.ged",
+   "titre": "Arrouard & Vithmann"
+  }
+ }
+}

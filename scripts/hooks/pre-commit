@@ -1,0 +1,92 @@
+#!/bin/sh
+# LE COMMIT REFUSE CE QUE LES CONTROLES REFUSENT — installe par scripts/hooks/installer.sh
+#
+# POURQUOI IL EXISTE. Le 20 septembre 2026, une fiche a ete commitee avec `moteur: "django"`
+# sans que `django` soit declare dans `_meta.moteurs` : le registre, le carnet et la table du
+# README se sont remis a diverger. `portails_coherence.py` l'a vu en une seconde — mais
+# PERSONNE NE L'AVAIT LANCE. C'est une autre session qui l'a trouve, et le généalogiste a du faire la
+# police : « c'est chiant de devoir faire la police ».
+#
+# LE DEFAUT N'ETAIT PAS L'ABSENCE DE CONTROLE, C'ETAIT SON CARACTERE FACULTATIF. Le dossier
+# connait deja cette lecon par coeur — les points de vue des narratifs etaient « relus a chaque
+# session, oublies a chaque session » jusqu'a ce que `build.py` les refuse. Une regle ecrite est
+# une regle oubliee ; seul ce qui echoue tient.
+#
+# CE QU'IL FAIT, ET RIEN DE PLUS :
+#   * si le commit touche le registre des fonds, le carnet, identifier.js ou le README des
+#     moteurs -> `portails_coherence.py` doit rendre 0 ;
+#   * si le commit touche data/*.json -> `build.py` doit rendre 0 erreur.
+#
+# IL NE TOURNE PAS SUR LES AUTRES COMMITS : un commit de prose ou de lettre passe sans delai.
+#
+# ⚠️ LES CONTROLES LISENT LE REPERTOIRE DE TRAVAIL, PAS L'INDEX. C'est assume : plusieurs
+# sessions ecrivent dans ces fichiers en meme temps, et ce qu'on veut savoir est « l'etat du
+# dossier est-il coherent maintenant », pas « le serait-il si mon commit etait seul ». Un echec
+# du a une autre session est une information, pas un faux positif.
+#
+# ⛔ NE PAS CONTOURNER PAR `--no-verify`. Si un controle bloque, il a raison ou il a un defaut :
+# dans les deux cas ca se repare, ca ne se saute pas.
+# ⚠️ AUCUN ACCENT GRAVE DANS UN `echo` DE CE FICHIER — les commentaires, eux, n'en risquent
+# rien. Le 20 septembre 2026, le message d'erreur citait la commande de reparation entre
+# accents graves : sh y a vu une substitution et A LANCE `--ecrire`, qui reecrit README.md.
+# Un hook qui MODIFIE le depot pendant qu'il refuse un commit est pire qu'un hook absent.
+# Guillemets simples dans tout message qui cite une commande.
+set -e
+
+racine=$(git rev-parse --show-toplevel)
+cd "$racine"
+stage=$(git diff --cached --name-only)
+
+# ⛔ UN `git commit` DIRECT EMPORTE L'INDEX ENTIER, Y COMPRIS CE QU'UNE AUTRE SESSION VIENT
+# D'Y METTRE. Le 25 septembre 2026, une session a stage ses trois fichiers — exactement ce que
+# la regle du depot demande — et son commit en a emporte ONZE : les huit autres etaient deja
+# stages par la session d'a cote. `git status` le disait ; il a ete lu et pas vu.
+#
+# Aucune attention ne corrige un geste dont le resultat depend d'un autre processus. D'ou
+# `scripts/committer.py`, qui met l'index des autres de cote, commite les chemins demandes,
+# puis leur rend leur index — et qui pose GIA_COMMIT pour passer ici.
+if [ -z "$GIA_COMMIT" ] && [ -n "$stage" ]; then
+  echo ""
+  echo "⛔ COMMIT REFUSÉ — passer par le script, qui ne peut pas emporter l'index d'autrui."
+  echo ""
+  echo '   python scripts/committer.py -m "titre" chemin1 chemin2'
+  echo '   python scripts/committer.py -F - chemin1 chemin2    # message sur stdin'
+  echo ""
+  echo "   Il met de côté ce qu'une autre session a staged, commite VOS chemins seuls,"
+  echo "   puis lui rend son index intact."
+  echo ""
+  echo "   Pour committer à la main en connaissance de cause : GIA_COMMIT=1 git commit …"
+  exit 1
+fi
+
+echo "$stage" | grep -qE '^(scripts/archives/portails\.json|scripts/archives/README\.md|scripts/archives/moteurs/identifier\.js|\.claude/skills/archives-fr/references/portails\.md)$' && {
+  echo "— pre-commit : cohérence du registre des fonds…"
+  python scripts/archives/portails_coherence.py || {
+    echo ""
+    echo "⛔ COMMIT REFUSÉ — le registre, le carnet et le README ne disent plus la même chose."
+    echo '   python scripts/archives/portails_coherence.py --ecrire   remet la table du README ;'
+    echo "   le reste se répare à la main, et le rapport dit quoi."
+    exit 1
+  }
+}
+
+echo "$stage" | grep -qE '^data/[a-z]+\.json$' && {
+  echo "— pre-commit : validation du corpus…"
+  sortie=$(python scripts/build.py) || true
+  echo "$sortie" | tail -1
+  echo "$sortie" | tail -1 | grep -qE '^0 erreur' || {
+    echo ""
+    echo '⛔ COMMIT REFUSÉ — build.py rend des erreurs. Le dépôt exige 0.'
+    echo '   python scripts/build.py   pour le détail.'
+    exit 1
+  }
+  echo "— pre-commit : champs affichés…"
+  python scripts/corpus_affiche.py || {
+    echo ""
+    echo '⛔ COMMIT REFUSÉ — un champ que le lecteur voit porte du markdown,'
+    echo '   du jargon de recherche ou du français non accentué.'
+    exit 1
+  }
+}
+
+exit 0

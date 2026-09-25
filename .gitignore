@@ -1,6 +1,12 @@
-# Assemblés depuis le dépôt genealog.ia par `scripts/plugin_build.py`, à chaque
-# construction. Les versionner ici ferait deux exemplaires vivants du même texte —
-# et surtout, la copie publiée est ANONYMISÉE : la source ne l'est pas, et elle ne
-# doit pas l'être. Le dépôt du plugin ne porte que ce qui s'y écrit à la main.
-skills/
-scripts/
+# ⛔ NE PAS Y REMETTRE `skills/` NI `scripts/`. Ils sont assemblés depuis le dépôt
+# genealog.ia par `scripts/plugin_build.py`, et ils ont été ignorés ici pendant une heure
+# au nom du « pas de doublon » — ce qui était un mauvais raisonnement : CE DÉPÔT EST LA
+# DISTRIBUTION. Sans eux, `claude plugin install` livre un manifeste, deux hooks et deux
+# README, et le plugin ne fait rien. La règle du doublon vaut pour la SOURCE ; ici c'est
+# la version publiée, anonymisée, et elle doit être versionnée.
+#
+# Le premier push en a fait la démonstration : 11 fichiers, aucune skill.
+
+__pycache__/
+*.pyc
+.chrome-*/
