@@ -1,0 +1,34 @@
+{
+  "name": "genealog-ia",
+  "description": "Search French civil-registration and parish archives, and write what you read into a family corpus without ever inventing an ancestor. Forty-five departmental portals, Italy, Algeria, conscription records, the press - and checks that refuse an inconsistent publication. Skills are in French, for French archives.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Pascal Pediroda"
+  },
+  "homepage": "https://github.com/pascalpediroda-maker/genealogia-poc",
+  "license": "MIT",
+  "userConfig": {
+    "archives_root": {
+      "type": "directory",
+      "title": "Dossier des archives",
+      "description": "Où se rangent les actes, les matricules et les documents téléchargés. Ce dossier sera rempli au fil des recherches — un disque avec de la place.",
+      "required": true
+    },
+    "photos_root": {
+      "type": "directory",
+      "title": "Photothèque familiale",
+      "description": "Vos photos de famille, telles qu'elles sont déjà rangées. Le corpus les cite, il ne les déplace jamais. Laisser vide si vous n'en avez pas encore."
+    },
+    "corpus_dir": {
+      "type": "directory",
+      "title": "Dossier du corpus",
+      "description": "Où s'écrivent les cinq fichiers de données — personnes, unions, moments, lieux, sources.",
+      "required": true
+    },
+    "artefact_url": {
+      "type": "string",
+      "title": "Adresse de la page publiée",
+      "description": "Laisser vide à la première publication : l'adresse sera écrite ici, et toutes les mises à jour iront dessus. Une famille, une page, une seule adresse."
+    }
+  }
+}

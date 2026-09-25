@@ -1,0 +1,34 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "statusMessage": "généalogie : chemins",
+            "command": "python",
+            "args": [
+              "${CLAUDE_PLUGIN_ROOT}/hooks/ecrire-config.py",
+              "${user_config.archives_root}",
+              "${user_config.photos_root}",
+              "${user_config.corpus_dir}",
+              "${user_config.artefact_url}"
+            ]
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|PowerShell|Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/portails-defendus.py\"",
+            "statusMessage": "portails : garde-fou"
+          }
+        ]
+      }
+    ]
+  }
+}

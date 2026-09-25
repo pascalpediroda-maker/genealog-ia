@@ -1,0 +1,6 @@
+# Assemblés depuis le dépôt genealog.ia par `scripts/plugin_build.py`, à chaque
+# construction. Les versionner ici ferait deux exemplaires vivants du même texte —
+# et surtout, la copie publiée est ANONYMISÉE : la source ne l'est pas, et elle ne
+# doit pas l'être. Le dépôt du plugin ne porte que ce qui s'y écrit à la main.
+skills/
+scripts/
