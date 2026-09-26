@@ -14,7 +14,7 @@ Ce plugin ajoute la moitié qui manque : l'outillage de recherche sur **plus de 
 | --- | --- | --- |
 | **archives-fr** | Ouvrir un portail d'archives, retrouver un registre, en tirer les vues, lire un acte au bon grossissement, et consigner ce qu'on a trouvé — comme ce qu'on n'a pas trouvé. | « trouve le mariage de 1858 de mon arrière-grand-père, il était de Haute-Loire », « liste les registres de cette commune », « lis les vues 120 à 128 », « est-elle morte là après 1870 ? » |
 | **trame-fr** | Verser un témoignage ou un acte dans le corpus : personnes, unions, moments, sources. Rédiger le narratif, décider ce qui reste privé, relire une fiche avant publication. | « ajoute cet acte au corpus », « écris sa vie à partir de ces trois sources », « est-ce que ça doit rester privé ? », « relis sa fiche avant que je publie » |
-| **nouveau-corpus** | Ouvrir un corpus à partir de ce qu'on a — un arbre manuscrit, un PDF, un GEDCOM, une base Hérédis, ou ce qu'un aîné raconte. Le sien, ou celui d'un ami, ou d'un adhérent du club. | « ouvre mon arbre de famille », « voici un arbre manuscrit scanné », « importe ce GEDCOM », « qu'est-ce que je dois demander à ma grand-mère ensuite ? » |
+| **arbre-fr** | Ouvrir un corpus à partir de ce qu'on a — un arbre manuscrit, un PDF, un GEDCOM, une base Hérédis, ou ce qu'un aîné raconte. Le sien, ou celui d'un ami, ou d'un adhérent du club. | « ouvre mon arbre de famille », « voici un arbre manuscrit scanné », « importe ce GEDCOM », « qu'est-ce que je dois demander à ma grand-mère ensuite ? » |
 
 ---
 

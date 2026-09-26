@@ -1,5 +1,5 @@
 ---
-name: nouveau-corpus
+name: arbre-fr
 description: Ouvrir un corpus familial à partir de ce qu'on a — une feuille manuscrite, un PDF, un GEDCOM, une base Hérédis, ou ce qu'un aîné raconte. Le sien, ou celui d'un proche, d'un ami, d'un adhérent de club. Couvre le rangement des pièces, les cinq fichiers du corpus, le bandeau de la page et sa publication. À charger dès qu'un arbre COMMENCE, avant d'écrire la première ligne. `archives-fr` sert à TROUVER, `trame-fr` à VERSER, celle-ci à OUVRIR.
 ---
 

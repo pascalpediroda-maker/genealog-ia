@@ -12,7 +12,7 @@ claude plugin eval . --case <name> --runs 1 --ablation none   # one case, cheapl
 | case | what it holds | why it exists |
 |---|---|---|
 | `declenchement-recherche` | a natural request for a marriage record fires `archives-fr`, and the reply proposes a real archival route | the skill is worthless if it does not fire on the way people actually write |
-| `declenchement-ouvrir-son-arbre` | "I want to start my family tree" fires `nouveau-corpus` | **non-regression.** Until 25 September 2026 that skill's published description said *"a tree that is NOT their own"* — so it would not have fired on the first thing any new user types |
+| `declenchement-ouvrir-son-arbre` | "I want to start my family tree" fires `arbre-fr` (named `nouveau-corpus` until 26 September 2026) | **non-regression.** Until 25 September 2026 that skill's published description said *"a tree that is NOT their own"* — so it would not have fired on the first thing any new user types |
 | `refus-de-deduire-une-personne` | a witness with the right surname and a plausible age is **not** turned into a parent | the founding corpus carried a person for days who had been born of an automatic transcription |
 | `negatif-partiel-ne-conclut-pas` | a margin sweep that found no marriage does not license moving to the next parish | a margin sweep never shows a marriage — their text starts at the left edge. Concluding from it cost a real marriage |
 | `non-declenchement-hors-sujet` | a plain Python question fires **no** skill | a skill that fires on everything is worse than one that fires on nothing |

@@ -14,7 +14,7 @@ This plugin adds the missing half: the search tooling for **130+ online sources*
 | --- | --- | --- |
 | **archives-fr** | Open an archive portal, find a register, pull its views, read an act at the right magnification, and record what was found — and what was not. | "find my great-grandfather's 1858 marriage, he was from the Haute-Loire", "list the registers for this commune", "read views 120 to 128", "did she die there after 1870?" |
 | **trame-fr** | Write a testimony or an act into the corpus: people, unions, moments, sources. Draft the narrative, decide what stays private, check a page before publishing. | "add this act to the corpus", "write her life from these three sources", "should this stay private?", "check his page before I publish" |
-| **nouveau-corpus** | Start a corpus from whatever you have — a hand-drawn tree, a PDF, a GEDCOM, a Heredis file, or what an elderly relative remembers. Yours, or a friend's, or a club member's. | "start my family tree", "here is a scanned hand-drawn tree", "import this GEDCOM", "what should I ask my grandmother next?" |
+| **arbre-fr** | Start a corpus from whatever you have — a hand-drawn tree, a PDF, a GEDCOM, a Heredis file, or what an elderly relative remembers. Yours, or a friend's, or a club member's. | "start my family tree", "here is a scanned hand-drawn tree", "import this GEDCOM", "what should I ask my grandmother next?" |
 
 ---
 
