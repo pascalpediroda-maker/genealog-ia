@@ -162,10 +162,26 @@ def lieu(pid):
     bouts = []
     if p.get("commune") and p["commune"] not in n:
         bouts.append(p["commune"])
-    if p.get("dept_name"):
-        bouts.append(p["dept_name"])
-    elif p.get("country"):
-        bouts.append(p["country"])
+    # SUBDIVISION POUR UN LIEU FRANCAIS, PAYS POUR UN LIEU ETRANGER -- et c'est ECRIT
+    # depuis le 25 septembre 2026, alors que ca marchait par ACCIDENT auparavant : le champ
+    # s'appelait `dept_name`, un lieu francais n'avait pas de `country`, un lieu etranger
+    # n'avait pas de departement, et l'ordre des deux tests suffisait. Le champ unifie
+    # `admin2_name` -- province italienne, wilaya, departement -- casse cet accident :
+    # Valvasone porte desormais les deux. « Valvasone (Pordenone) » ne dit rien a un lecteur
+    # francais, c'est « (Italie) » qu'il lui faut ; l'inverse vaut pour un lecteur italien,
+    # et c'est l'application qui le sert, pas cette page-ci.
+    pays = p.get("country")
+    if pays and pays != "France":
+        bouts.append(pays)
+    elif p.get("admin2_name"):
+        bouts.append(p["admin2_name"])
+    elif pays:
+        bouts.append(pays)
+    # UN LIEU QUI EST SON PROPRE PAYS NE SE REPETE PAS. « Checoslovaquie » est tout ce
+    # qu'on sait de l'endroit ou meurent Antonio et Filippo MIGOT : le nom du lieu EST
+    # le nom du pays, et la regle generale rendait « Tchecoslovaquie (Tchecoslovaquie) ».
+    # Demande du généalogiste, 25 septembre 2026 : « si on n'a que le pays ou la region, c'est ok ».
+    bouts = [b for b in bouts if b != n]
     if not bouts:
         return n
     ctx = ", ".join(bouts)

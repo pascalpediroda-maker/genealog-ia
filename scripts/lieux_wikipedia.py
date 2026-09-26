@@ -170,7 +170,11 @@ def cherche(p):
     """
     u = API + urllib.parse.urlencode({
         "action": "query", "list": "search", "srlimit": 8, "format": "json",
-        "srsearch": "%s %s" % (p["name"], p.get("dept_name") or p.get("country") or "")})
+        # POUR CHERCHER, LE PLUS PRECIS GAGNE : « Valvasone Pordenone » cadre mieux que
+        # « Valvasone Italie », et le test des coordonnees ecarte de toute facon un mauvais
+        # article. C'est l'inverse de l'AFFICHAGE, ou le pays l'emporte pour l'etranger.
+        "srsearch": "%s %s" % (p["name"],
+                               p.get("admin2_name") or p.get("country") or "")})
     r = json.load(urllib.request.urlopen(
         urllib.request.Request(u, headers=UA), timeout=45, context=CTX))
     voulu = cle(p["name"])
@@ -194,8 +198,13 @@ def titres(p):
     """
     n = p["name"]
     out = []
-    if p.get("dept_name"):
-        out.append("%s (%s)" % (n, p["dept_name"]))
+    # « Marennes (Charente-Maritime) » est la convention de desambiguisation de la Wikipedia
+    # FRANCAISE, et elle ne vaut que pour les communes francaises : « Valvasone (Pordenone) »
+    # n'est le titre d'aucun article chez elle. On ne propose donc ce gabarit que quand le
+    # lieu est en France -- ailleurs, le nom nu, et le test des coordonnees tranche.
+    pays = p.get("country")
+    if p.get("admin2_name") and (not pays or pays == "France"):
+        out.append("%s (%s)" % (n, p["admin2_name"]))
     out.append(n)
     return out
 

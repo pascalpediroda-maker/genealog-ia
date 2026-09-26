@@ -548,7 +548,12 @@ CHAMPS_CONNUS = {
         "fourchette_assumee",
     },
     "places.json": {
-        "id", "name", "aliases", "commune", "dept", "dept_name", "region", "country",
+        # `admin2` / `admin2_name` -- LE NIVEAU QUI SITUE, ET IL N'EST PAS FRANCAIS. Ces deux
+        # champs s'appelaient `dept` / `dept_name` jusqu'au 25 septembre 2026 : departement en
+        # France, province en Italie, wilaya en Algerie, c'est la meme idee et elle portait un
+        # nom qui n'en couvrait qu'un tiers du monde. `dept` n'est plus reconnu -- un lieu qui
+        # le porte encore ressort ici, et c'est voulu.
+        "id", "name", "aliases", "commune", "admin2", "admin2_name", "region", "country",
         "insee", "coords", "coords_source", "coords_approx", "wikipedia",
         "wikipedia_cherche", "note", "lectures_incertaines", "todo",
     },
@@ -574,6 +579,67 @@ if "--champs" in sys.argv:
     print("\n>> champs qu'aucun schema ne connait (sources.json est exclu a dessein)")
     for nom, oid, champ in sorted(inconnus):
         print(f"  {nom:<14} {oid:<34} {champ}")
+
+# --- un pays dementi par ses propres coordonnees ------------------------------
+# UN CHAMP PEUT PORTER LE BON NOM ET LA MAUVAISE VALEUR, ET AUCUN CONTROLE NE REGARDAIT
+# LA VALEUR. Le 25 septembre 2026, trois lieux du corpus se disaient EN FRANCE pendant
+# que leurs propres coordonnees -- ecrites dans le meme enregistrement, par Wikipedia,
+# avec l'article -- les placaient en Italie : AZZANO DECIMO (45,88 / 12,72, Frioul),
+# SALERNE (40,68 / 14,77, c'est-a-dire SALERNO en Campanie et non la commune du Var) et
+# GONNOSFANADIGA (39,49 / 8,66, Sardaigne).
+#
+# ILS VIENNENT TOUS DE L'IMPORT HEREDIS, QUI A ESTAMPILLE « France » SUR TOUT CE QU'IL
+# CREAIT. Leur `note` le dit d'ailleurs en toutes lettres -- « a verifier et completer
+# (departement/pays a confirmer) » -- et personne n'est revenu confirmer. L'erreur etait
+# invisible a l'affichage : `lieu()` n'ecrit pas « France » a un lecteur francais, donc
+# un lieu italien marque France s'affichait NU, exactement ce que la regle interdit.
+#
+# LE TEST NE DEDUIT RIEN : il oppose deux valeurs deja ecrites. Des boites genereuses,
+# et on ne signale que ce qui tombe franchement dehors.
+#
+# ET LA FRANCE N'EST PAS D'UN SEUL TENANT -- premiere version du test, meme journee : elle
+# n'avait qu'une boite metropolitaine, et elle a accuse MURUROA, FANGATAUFA et HAO, qui
+# sont francais. Un detecteur qui crie sur du vrai est du bruit, et c'est ainsi qu'on
+# apprend a ne plus le lire. Chaque pays porte donc une LISTE de boites.
+BOITES = {
+    "France": [
+        (41.3, 51.2, -5.2, 9.6),        # metropole et Corse
+        (14.3, 16.6, -61.9, -60.7),     # Guadeloupe, Martinique
+        (2.0, 6.0, -54.7, -51.5),       # Guyane
+        (-21.5, -12.5, 44.9, 55.9),     # La Reunion, Mayotte
+        (-28.0, -7.0, -155.0, -134.0),  # Polynesie francaise
+        (-23.0, -18.0, 163.0, 169.0),   # Nouvelle-Caledonie
+        (46.7, 47.2, -56.5, -56.1),     # Saint-Pierre-et-Miquelon
+    ],
+    "Italie":    [(35.4, 47.2, 6.5, 18.6)],
+    "Suisse":    [(45.8, 47.9, 5.9, 10.6)],
+    "Allemagne": [(47.2, 55.1, 5.8, 15.1)],
+    "Algérie":   [(18.9, 37.2, -8.7, 12.0)],
+    "Maroc":     [(27.6, 35.95, -13.2, -0.9)],
+    "Argentine": [(-55.1, -21.7, -73.6, -53.6)],
+    "Albanie":   [(39.6, 42.7, 19.2, 21.1)],
+}
+pays_dementis = []
+for pl in places.values():
+    c, xy = pl.get("country"), pl.get("coords")
+    boites = BOITES.get(c or "France")
+    if not boites or not (isinstance(xy, list) and len(xy) == 2):
+        continue
+    lat, lon = xy
+    if not any(s <= lat <= n and o <= lon <= e for s, n, o, e in boites):
+        pays_dementis.append((pl["id"], c or "France (implicite)", lat, lon))
+
+if pays_dementis:
+    warnings.append(
+        f"PAYS DEMENTI PAR SES COORDONNEES : {len(pays_dementis)} lieux declarent un pays "
+        f"ou leurs propres coordonnees ne tombent pas -- la valeur est fausse dans l'un des "
+        f"deux champs, et un lieu etranger marque France s'affiche NU. Detail : "
+        f"`python scripts/build.py --pays`")
+
+if "--pays" in sys.argv:
+    print("\n>> pays dementis par les coordonnees du meme enregistrement")
+    for lid, c, lat, lon in sorted(pays_dementis):
+        print(f"  {lid:<28} dit {c:<22} coords {lat}, {lon}")
 
 # --- personnes hors de l'arbre -----------------------------------------------
 # LA PARENTE VIT DANS unions.json, ET UNE PERSONNE QU'ON Y OUBLIE N'EXISTE PAS POUR

@@ -98,9 +98,11 @@ série : neuf moments écrits d'affilée au même gabarit, et le gabarit portait
 - **Accents partout.** Un script qui écrit dans `data/` s'écrit en UTF-8 et se relit sur la
   page, pas dans un terminal Windows qui ment sur ce qu'il affiche. « Meigne », « etait »,
   « generation » ont détonné au milieu d'un corpus accentué.
-- **Un lieu ne s'affiche jamais nu.** `lieu()` dans `build_poc.py` ajoute le département ou le
-  pays : ne pas le réécrire à la main dans un narratif. Mais tout lieu créé doit porter `dept`
-  **et** `dept_name`, ou `country` — sinon la règle tombe.
+- **Un lieu ne s'affiche jamais nu.** `lieu()` dans `build_poc.py` ajoute la subdivision ou le
+  pays : ne pas le réécrire à la main dans un narratif. Mais tout lieu créé doit porter `admin2`
+  **et** `admin2_name` — département en France, province en Italie, wilaya en Algérie — plus
+  `country` hors de France, sinon la règle tombe. *Ces champs s'appelaient `dept` / `dept_name`
+  jusqu'au 25 septembre 2026 ; `dept` n'est plus reconnu.*
 
 **ET UN NOM ÉCRIT N'EST UN LIEN QUE SI LA PAGE LE RECONNAÎT.** Le 11 septembre 2026, le mariage
 de 1938 nommait « René DANNEPOND » et « Georges NEAU », tous deux participants, et aucun des deux
